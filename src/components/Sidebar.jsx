@@ -6,7 +6,7 @@ const Sidebar = () => {
   const sidebarItems = [
     { text: 'My QR Codes', link: '/qrcodes' },
     { text: 'Create Folder', link: '/create' },
-    { text: 'Statistics', link: '/stats' },
+    { text: 'Stats', link: '/stats' },
     { text: 'Profile', link: '/profile' },
   ];
 
