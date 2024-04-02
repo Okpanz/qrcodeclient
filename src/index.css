@@ -6,3 +6,12 @@
 * {
   font-family: 'Poppins', sans-serif;
 }
+
+@layer components{
+  .qr-border{
+    @apply border-[1px] border-["#e4e4e5"]
+  }
+  .qr-rounded{
+    @apply rounded
+  }
+}

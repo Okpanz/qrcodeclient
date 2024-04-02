@@ -2,8 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Dashboard from './views/Dashboard';
-import QRCodePage from './views/QRCodePage.jsx'; // Import your other views/components as needed
 import Folder from './views/Folder.jsx';
+import QRCodePage from './views/QRCodePage.jsx';
+import Stats from "./views/Stats.jsx"; // Import your other views/components as needed
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Routes>
         <Route path="/qrcodes" element={<QRCodePage />} />
           <Route path="/create" element={<Folder />} />
+            <Route path={"/stats"} element={<Stats/>}/>
         </Routes>
       </div>
     </Router>
