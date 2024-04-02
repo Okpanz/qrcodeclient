@@ -6,7 +6,7 @@ const Dashboard = ({ subRoutes }) => {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1">
+      <div className="">
         <Outlet />
       </div>
     </div>

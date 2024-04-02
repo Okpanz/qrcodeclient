@@ -7,12 +7,10 @@ import QRCodePage from './views/QRCodePage.jsx'; // Import your other views/comp
 const App = () => {
   return (
     <Router>
-      <div className="flex">
-        <Sidebar />
+      <div className="flex w-screen">
+        <Sidebar className="fixed "/>
         <Routes>
-          {/* <Route path="/" element={<Dashboard />} /> */}
           <Route path="/qrcodes" element={<QRCodePage />} />
-          {/* Define routes for other pages */}
         </Routes>
       </div>
     </Router>
