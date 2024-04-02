@@ -1,9 +1,13 @@
+
 import React, {useState} from 'react'
 import { BsQrCode } from "react-icons/bs";
 import Modal from "../components/Modal.jsx";
 import { HiOutlinePencil } from "react-icons/hi2";
 export default function MyQrCode({
-  
+
+
+
+
   checkedAll,
   qrCode = <BsQrCode size={120} />,
   qrLink = "https://me-qr.com/XIGZJRNF",
@@ -23,9 +27,11 @@ export default function MyQrCode({
         <div className={"flex  gap-2.5 items-center"}>
           <input type="checkbox" />
           <label>QR Code</label>
+
           <HiOutlinePencil
           onClick={() => setEditModal(true)} 
           color={"#a480ae"} size={"20"} className="cursor-pointer hover:scale-1" />
+
         </div>
         <div className={"flex gap-4"}>
           {qrCode}
@@ -35,12 +41,14 @@ export default function MyQrCode({
           </div>
         </div>
       </div>
+
       {editModal && 
       <Modal 
       title="Edit Vehicle Information"
       onClose={() => setEditModal(false)}
       />
       }
+ main
     </section>
   );
 }
