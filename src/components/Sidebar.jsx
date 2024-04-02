@@ -1,6 +1,6 @@
 import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import QRLogo from '../assets/QRSS with name svg white.svg';
-import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   const sidebarItems = [
@@ -10,9 +10,12 @@ const Sidebar = () => {
     { text: 'Profile', link: '/profile' },
   ];
 
+  // Get the current pathname using useLocation hook
+  const { pathname } = useLocation();
+
   return (
-    <div className="flex flex-col w-64 bg-blue-500 h-screen text-white">
-      <div className="flex items-center justify-center h-20 bg-blue-300">
+    <div className="flex flex-col w-64 bg-white h-screen text-gray-500">
+      <div className="flex items-center justify-center h-20 bg-white">
         <img src={QRLogo} alt="" />
       </div>
       <div className="flex-1 overflow-y-auto">
@@ -22,7 +25,9 @@ const Sidebar = () => {
               <NavLink
                 to={item.link}
                 activeClassName="bg-blue-700 border-l-4"
-                className="block px-4 py-2 hover:bg-blue-700 cursor-pointer transition-all ease-in-out duration-100 font-medium"
+                className={`block p-4 hover:bg-blue-300 cursor-pointer transition-all ease-in-out duration-100 font-bold ${
+                  pathname === item.link ? 'bg-blue-300 border-l-4 border-blue-900 text-blue-800' : ''
+                }`}
               >
                 {item.text}
               </NavLink>
@@ -32,6 +37,6 @@ const Sidebar = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Sidebar;
