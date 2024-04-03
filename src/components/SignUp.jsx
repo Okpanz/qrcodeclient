@@ -33,8 +33,8 @@ const SignUp = () => {
     const response = await dispatch(signup(userData));
     // If signup is successful, response will contain the user data including user ID
     if (!response.error) {
-      setUserId(response.payload.userId); // Set user ID
-      setShowOTPModal(true); // Show OTP modal
+      setUserId(response.payload.userId); 
+      setShowOTPModal(true); 
     }
   };
 

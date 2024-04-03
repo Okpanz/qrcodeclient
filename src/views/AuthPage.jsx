@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SignUp from '../components/SignUp';
+// import SignUp from '../components/SignUp';
 import Login from '../components/Login';
 
 const AuthPage = () => {
@@ -23,11 +23,11 @@ const AuthPage = () => {
             className={`px-4 py-2 rounded-md focus:outline-none ${activeTab === 'signup' ? 'bg-blue-500 text-white' : 'text-gray-700'}`}
             onClick={() => handleTabChange('signup')}
           >
-            Sign Up
+            {/* Sign Up */}
           </button>
         </div>
         {activeTab === 'login' && <Login />}
-        {activeTab === 'signup' && <SignUp />}
+        {/* {activeTab === 'signup' && <SignUp />} */}
       </div>
     </div>
   );

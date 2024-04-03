@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'; // Import Axios
 import { useNavigate } from 'react-router-dom';
 
 const OtpModal = ({ action, onClose }) => {
@@ -12,11 +13,26 @@ const OtpModal = ({ action, onClose }) => {
   };
 
   const handleVerifyOTP = async () => {
-    // Your OTP verification logic goes here
-    // Assuming OTP verification is successful, redirect to '/qrcodes'
-    // Here you might dispatch an action to verify OTP and handle success/error response accordingly
+    // preventDefault()
+    const userDataString = localStorage.getItem('userData');
+    if (!userDataString) {
+      throw new Error('User data not found in localStorage');
+    }
+
+    const userData = JSON.parse(userDataString);
+    const userId = userData.newUser._id;
+
+    const url = `https://server-master-ullz.onrender.com/auth/verify-otp/${userId}`;
+
     try {
-      history('/qrcodes');
+      const response = await axios.post(url, {otp}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+    console.log(response)
+      history('/qrcodes'); 
     } catch (error) {
       console.error('OTP verification failed:', error);
       // Handle OTP verification failure
