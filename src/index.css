@@ -21,6 +21,9 @@
     @apply flex gap-6 items-center
   }
   .qr-result-h2{
-    @apply font-bold text-lg text-[#text-[#afb2b2]]
+    @apply font-bold text-lg
+  }
+  .qr-result-span{
+    @apply text-[#afb2b2]
   }
 }

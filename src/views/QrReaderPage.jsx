@@ -46,19 +46,23 @@ export default function QrReaderPage() {
           <div className={"qr-result-container"}>
             <div className={"qr-result"}>
               <h2 className={"qr-result-h2"}>Vehicle URL</h2>
-              <span className={"text-[#afb2b2]"}>{vehicleUrl}</span>
+              <span className={"qr-result-span"}>{vehicleUrl}</span>
             </div>
             <div className={"qr-result"}>
               <h2 className={"qr-result-h2"}>Vehicle Price</h2>
-              <span>{vehiclePrice}</span>
+              <span className={"qr-result-span"}>{vehiclePrice}</span>
             </div>
             <div className={"qr-result"}>
               <h2 className={"qr-result-h2"}>Vehicle URL</h2>
-              <span>{vehicleUrl}</span>
+              <span className={"qr-result-span"}>{vehicleUrl}</span>
             </div>
             <div className={"qr-result"}>
               <h2 className={"qr-result-h2"}>Vehicle VIM</h2>
-              <span>{vim}</span>
+              <span className={"qr-result-span"}>{vim}</span>
+            </div>
+            <div className={"qr-result"}>
+              <h2 className={"qr-result-h2"}>Stock NO</h2>
+              <span className={"qr-result-span"}>{stockNo}</span>
             </div>
           </div>
           <button
