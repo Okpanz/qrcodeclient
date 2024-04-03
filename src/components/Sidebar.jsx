@@ -1,14 +1,17 @@
+
 // Sidebar.jsx
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import QRLogo from '../assets/QRSS with name svg white.svg';
 
+
 const Sidebar = () => {
   const sidebarItems = [
-    { text: 'My QR Codes', link: '/qrcodes' },
-    { text: 'Create Folder', link: '/create' },
-    { text: 'Stats', link: '/stats' },
-    { text: 'Profile', link: '/profile' },
+    { text: "My QR Codes", link: "/qrcodes" },
+    { text: "Create Folder", link: "/create" },
+    { text: "Stats", link: "/stats" },
+    { text: "Profile", link: "/profile" },
+    { text: "Scan QR Code", link: "/scan" },
   ];
 
   // Get the current pathname using useLocation hook
@@ -27,7 +30,9 @@ const Sidebar = () => {
                 to={item.link}
                 activeClassName="bg-blue-700 border-l-4"
                 className={`block p-4 hover:bg-blue-300 cursor-pointer transition-all ease-in-out duration-100 font-bold ${
-                  pathname === item.link ? 'bg-blue-300 border-l-4 border-blue-900 text-blue-800' : ''
+                  pathname === item.link
+                    ? "bg-blue-300 border-l-4 border-blue-900 text-blue-800"
+                    : ""
                 }`}
               >
                 {item.text}
