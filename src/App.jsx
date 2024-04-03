@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
@@ -18,13 +19,13 @@ const App = () => {
           <Route path="/qrcodes" element={<QRCodePage />} />
           <Route path="/create" element={<Folder />} />
 
-          <Route path="/qrcodes" element={<QRCodePage />} />
+          
 
           <Route path={"/stats"} element={<Stats />} />
           <Route path={"/scan"} element={<QrReaderPage />} />
         </Routes>
       </div>
-    </Router>
+
   );
 };
 

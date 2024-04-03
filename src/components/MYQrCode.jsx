@@ -38,13 +38,17 @@ export default function MyQrCode({
           </div>
         </div>
       </div>
-      {editModal && (
-        <Modal
-          title="Edit Vehicle Information"
-          onClose={() => setEditModal(false)}
-        />
-      )}
-      main
+
+
+      {editModal && 
+      <Modal 
+      title="Edit Vehicle Information"
+      action= "Update Qr"
+      onClose={() => setEditModal(false)}
+      />
+      }
+ main
+
     </section>
   );
 }
