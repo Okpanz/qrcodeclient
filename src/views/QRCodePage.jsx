@@ -22,8 +22,8 @@ const QRCodePage = () => {
 </button>
 
 
-      <div className="flex h-[70vh] gap-4">
-        <div className="w-[60rem] bg-white rounded-sm border border-gray-300 p-10 flex flex-col gap-6">
+      <div className="flex h-[70vh] w">
+        <div className="w-[60vw] bg-white rounded-sm border border-gray-300 p-10 flex flex-col gap-6 overflow-hidden">
           <div className="flex  flex-row gap-8">
             <div className="px-5 py-4 gap-5 flex text-gray-400 items-center justify-between  qr-border qr-rounded w-4/5">
               <div className={"flex gap-2"}>
@@ -50,6 +50,7 @@ const QRCodePage = () => {
       {showModal && (
   <Modal
     title="Create QR Code"
+    action="Create QR"
     onClose={() => setShowModal(false)}
   />
 )}

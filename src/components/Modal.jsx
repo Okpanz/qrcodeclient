@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Modal = ({ title, onClose }) => {
+const Modal = ({ title, onClose,update,action }) => {
   // State for input values
   const [vehicleDetails, setVehicleDetails] = React.useState({
     plateNumber: '',
@@ -84,13 +84,16 @@ const Modal = ({ title, onClose }) => {
             placeholder="Enter vehicle color"
           />
         </div>
-        
-        <button
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          onClick={onClose}
-        >
-          Close
-        </button>
+        <div className='flex justify-between'>
+  <button className='mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600' onClick={update}>{action}</button>
+  <button
+    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+    onClick={onClose}
+  >
+    Close
+  </button>
+</div>
+
       </div>
     </div>
   );

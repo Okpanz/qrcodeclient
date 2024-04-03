@@ -45,6 +45,7 @@ export default function MyQrCode({
       {editModal && 
       <Modal 
       title="Edit Vehicle Information"
+      action= "Update Qr"
       onClose={() => setEditModal(false)}
       />
       }

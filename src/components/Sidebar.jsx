@@ -1,3 +1,4 @@
+// Sidebar.jsx
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import QRLogo from '../assets/QRSS with name svg white.svg';

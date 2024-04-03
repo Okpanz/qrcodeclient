@@ -18,7 +18,7 @@ const Folder = () => {
   };
 
   return (
-    <div className='h-screen bg-slate-300 w-[80%] flex flex-col gap-2 justify-center items-center'>
+    <div className='h-screen bg-slate-300  flex flex-col gap-2 justify-center items-center'>
       <button onClick={() => setShowModal1(true)}
       className="absolute right-0 top-0 m-10 p-3 rounded-sm bg-blue-300 flex items-center gap-2 text-whiet">Create Folder <MdCreateNewFolder />  </button>
       <h1 className='font-bold'>Folders</h1>
@@ -61,6 +61,7 @@ const Folder = () => {
       {showModal1 &&
       <Modal 
       title="Create Folder"
+      action = "Create Folder"
       onClose={() => setShowModal1(false)}/>
 
     }
