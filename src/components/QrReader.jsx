@@ -1,20 +1,20 @@
 import QrScanner from "qr-scanner";
 import { useEffect, useRef, useState } from "react";
 
-export default function QrReader({ onGetScannedResul }) {
+export default function QrReader({ onGetScannedResult }) {
   const scanner = useRef(null);
   const videoEl = useRef(null);
   const qrBoxEl = useRef(null);
   const [qrOn, setQrOn] = useState(true);
-
   useEffect(() => {
     if (videoEl.current && !scanner.current) {
       scanner.current = new QrScanner(
         videoEl.current,
         (result) => {
-          console.log(result);
-          if (onGetScannedResul instanceof Function) {
-            onGetScannedResul(result);
+          console.log(result.data);
+
+          if (onGetScannedResult instanceof Function) {
+            onGetScannedResult(result.data);
           } else console.log(`onGetScannedResult must be a function`);
         },
         {
@@ -45,7 +45,7 @@ export default function QrReader({ onGetScannedResul }) {
         scanner.current.stop();
       }
     };
-  }, [onGetScannedResul]);
+  }, [onGetScannedResult]);
 
   useEffect(() => {
     if (!qrOn)
