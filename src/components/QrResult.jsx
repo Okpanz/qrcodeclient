@@ -6,7 +6,7 @@ export default function QrResult({ children, className }) {
           className
         }
       >
-        <div className="bg-white p-8 rounded-md shadow-lg w-[50vw] transition-opacity duration-300">
+        <div className="w-screen bg-white p-8 rounded-md shadow-lg md:w-[50vw] transition-opacity duration-300">
           {children}
         </div>
       </div>
