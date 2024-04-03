@@ -7,9 +7,17 @@ const initialState = {
   error: null,
   successMessage: null,
 };
+// Define action creator for loginUser
+export const loginUser = (user) => {
+  return {
+    type: 'auth/loginUser',
+    payload: user,
+  };
+};
+
 
 // Define async thunk for logging in
-export const login = createAsyncThunk('auth/login', async (credentials, { dispatch }) => {
+export const login = createAsyncThunk('auth/login', async (credentials, { dispatch, rejectWithValue }) => {
   try {
     const response = await fetch('https://server-master-ullz.onrender.com/auth/login', {
       method: 'POST',
@@ -23,10 +31,11 @@ export const login = createAsyncThunk('auth/login', async (credentials, { dispat
       throw new Error(errorData.message);
     }
     const user = await response.json();
-    dispatch(loginUser(user)); // Dispatch loginUser action to update user state
+    
+    dispatch(loginUser(user)); 
     return user;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
+    return rejectWithValue(error.message);
   }
 });
 
@@ -44,11 +53,18 @@ export const signup = createAsyncThunk('auth/signup', async (userData) => {
     },
     body: JSON.stringify(userData),
   });
+
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message);
   }
-  return response.json();
+
+  const responseData = await response.json(); // Parse response data
+
+  // Save response data to localStorage
+  localStorage.setItem('userData', JSON.stringify(responseData));
+
+  return responseData; // Return the parsed response data
 });
 
 // Create auth slice
@@ -63,6 +79,7 @@ const authSlice = createSlice({
   reducers: {
     loginUser(state, action) {
       state.user = action.payload;
+      console.log(action)
       localStorage.setItem('user', JSON.stringify(action.payload)); 
     },
     logoutUser(state) {

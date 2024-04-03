@@ -1,8 +1,9 @@
 import QrFrame from "../components/QrFrame.jsx";
 import QrReader from "../components/QrReader.jsx";
 import QrResult from "../components/QrResult.jsx";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { parseQrResult } from "../utils/utils.js";
+import Header from "./Header.jsx";
 
 export default function QrReaderPage() {
   const [vehicleUrl, setVehicleUrl] = useState("");
@@ -21,15 +22,31 @@ export default function QrReaderPage() {
     setStockNo(stockNo);
     setShowQr(false);
     console.log("from the handle get qr", JSON.parse(data));
+    // Trigger GET request when scan is successful
+    fetch("https://server-master-ullz.onrender.com/vehicle/" + vehicleURL)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        // Handle response data if needed
+      })
+      .catch(error => {
+        console.error('There was a problem with the GET request:', error);
+      });
   }
-  const getResult = localStorage.getItem("qrCode");
-  console.log(` Items is : ${getResult}`);
+
+  useEffect(() => {
+    const getResult = localStorage.getItem("qrCode");
+    console.log(` Items is : ${getResult}`);
+  }, []);
+
   return (
     <div
       className={
         "relative h-screen bg-slate-300 w-[80%] flex flex-col gap-2 justify-center items-center"
       }
     >
+      <Header />
       <div
         className={
           "w-[60rem] bg-white rounded-sm border border-gray-300 p-10 flex justify-center items-center gap-6 min-h-[80vh]"

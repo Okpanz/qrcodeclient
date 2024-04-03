@@ -68,3 +68,4 @@ export default function QrReader({ onGetScannedResult }) {
     </>
   );
 }
+0
