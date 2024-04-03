@@ -6,18 +6,13 @@ export default function QrReader({ onGetScannedResult }) {
   const videoEl = useRef(null);
   const qrBoxEl = useRef(null);
   const [qrOn, setQrOn] = useState(true);
-  const [scanned, setScanned] = useState("");
   useEffect(() => {
     if (videoEl.current && !scanner.current) {
       scanner.current = new QrScanner(
         videoEl.current,
         (result) => {
           console.log(result.data);
-          const save = JSON.stringify(result);
-          setScanned(save);
-          console.log(scanned);
 
-          localStorage.setItem("qrCode", JSON.stringify(result));
           if (onGetScannedResult instanceof Function) {
             onGetScannedResult(result.data);
           } else console.log(`onGetScannedResult must be a function`);

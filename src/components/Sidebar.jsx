@@ -15,7 +15,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className="flex flex-col w-64 bg-white h-screen text-gray-500">
+    <div className={`flex flex-col w-64 bg-white h-screen text-gray-500 `}>
       <div className="flex items-center justify-center h-20 bg-white">
         <img src={QRLogo} alt="" />
       </div>
