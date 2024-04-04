@@ -20,10 +20,9 @@ export default function QrReaderPage() {
     setVim(VIM);
     setStockNo(stockNo);
     setShowQr(false);
-    console.log("from the handle get qr", JSON.parse(data));
+    // console.log("from the handle get qr", JSON.parse(data));
   }
-  const getResult = localStorage.getItem("qrCode");
-  console.log(` Items is : ${getResult}`);
+
   return (
     <div
       className={
