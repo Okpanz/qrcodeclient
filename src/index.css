@@ -27,3 +27,21 @@
     @apply text-[#afb2b2]
   }
 }
+::-webkit-scrollbar {
+  width: 1px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #156faf;
+  border-radius: 2rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dce8ff;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

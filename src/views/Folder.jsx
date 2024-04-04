@@ -39,6 +39,7 @@ const Folder = () => {
 
   const handleFolderClick = (folderId) => {
     setSelectedFolder(folderId);
+    console.log(selectedFolder)
     setShowModal(true);
   };
 
@@ -108,29 +109,28 @@ const Folder = () => {
 
       {showModal1 && <FolderModal title='Create Folder' action='Create Folder' onClose={() => setShowModal1(false)} />}
 
-      {showModal && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
-          <div className='bg-white p-8 rounded-md shadow-lg transition-opacity duration-300'>
-            <h2 className='font-bold text-lg mb-4'>QR Codes in Selected Folder</h2>
-            <ul>
-            {folders.map(folder => (
-        <div key={folder._id}>
-          <h2>{folder.name}</h2>
-          {folder.qrCodes.map(qrCode => (
-            <div key={qrCode._id} className='flex items-center'>
-              <img src={qrCode.qrCodeImage} width={60} alt="QR Code" />
-              <p>Created At: {formatDate(qrCode.createdAt)}</p>
-              {/* Add more details as needed */}
-            </div>
+      {showModal && selectedFolder && (
+  <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
+    <div className='bg-white p-8 rounded-md shadow-lg transition-opacity duration-300'>
+      <h2 className='font-bold text-lg mb-4'>QR Codes in {folders.filter(folder => folder._id ===selectedFolder).map(folder(folder.qrCodes.map(qrCode=>(<p key={qrCode._id}>{qrCode.name}</p>))))} </h2>
+      <ul>
+        {folders
+          .filter(folder => folder._id === selectedFolder)
+          .map(folder => (
+            folder.qrCodes.map(qrCode => (
+              <div key={qrCode._id} className='flex items-center'>
+                <img src={qrCode.qrCodeImage} width={60} alt="QR Code" />
+                <p>Created At: {formatDate(qrCode.createdAt)}</p>
+                {/* Add more details as needed */}
+              </div>
+            ))
           ))}
-        </div>
-      ))}
+      </ul>
+      <button onClick={() => setShowModal(false)}>Close</button>
+    </div>
+  </div>
+)}
 
-            </ul>
-            <button onClick={() => setShowModal(false)}>Close</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

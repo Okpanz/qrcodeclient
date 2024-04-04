@@ -6,6 +6,10 @@ export default {
       screens: {
         sm: { max: "639px" },
       },
+      colors: {
+        primary: '#156faf',
+        secondary: '#dce8ff',
+      },
     },
   },
   plugins: [],

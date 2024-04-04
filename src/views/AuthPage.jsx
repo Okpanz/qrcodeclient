@@ -14,13 +14,13 @@ const AuthPage = () => {
       <div className="bg-white p-4  rounded-md">
         <div className="flex justify-center mb-4">
           <button
-            className={`px-4 py-2 rounded-md focus:outline-none ${activeTab === 'login' ? 'bg-blue-500 text-white' : 'text-gray-700'}`}
+            className={`px-4 py-2 rounded-md focus:outline-none ${activeTab === 'login' ? 'bg-primary text-white' : 'text-gray-700'}`}
             onClick={() => handleTabChange('login')}
           >
             Login
           </button>
           <button
-            className={`px-4 py-2 rounded-md focus:outline-none ${activeTab === 'signup' ? 'bg-blue-500 text-white' : 'text-gray-700'}`}
+            className={`px-4 py-2 rounded-md focus:outline-none ${activeTab === 'signup' ? 'bg-primary text-white' : 'text-gray-700'}`}
             onClick={() => handleTabChange('signup')}
           >
             {/* Sign Up */}
