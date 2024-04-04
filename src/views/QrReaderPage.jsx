@@ -11,9 +11,10 @@ export default function QrReaderPage() {
   const [vim, setVim] = useState("");
   const [stockNo, setStockNo] = useState("");
   const [showQr, setShowQr] = useState(true);
+  const [qrCodeId, setQrCodeId] = useState()
 
   function handleGetQr(data) {
-    const [vehicleURL, vehiclePrice, VIM, stockNo] = parseQrResult(
+    const [vehicleURL, vehiclePrice, VIM, stockNo, qrCodeId] = parseQrResult(
       JSON.parse(data)
     );
     setVehicleUrl(vehicleURL);
@@ -21,14 +22,16 @@ export default function QrReaderPage() {
     setVim(VIM);
     setStockNo(stockNo);
     setShowQr(false);
+    setQrCodeId(qrCodeId)
     console.log("from the handle get qr", JSON.parse(data));
     // Trigger GET request when scan is successful
-    fetch("https://server-master-ullz.onrender.com/vehicle/" + vehicleURL)
+    fetch(`https://server-master-ullz.onrender.com/vehicle/${qrCodeId}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         // Handle response data if needed
+        console.log(response)
       })
       .catch((error) => {
         console.error("There was a problem with the GET request:", error);
@@ -70,7 +73,7 @@ export default function QrReaderPage() {
         <td className="border px-4 py-2">{vehiclePrice}</td>
       </tr>
       <tr>
-        <td className="border px-4 py-2">Vehicle VIM</td>
+        <td className="border px-4 py-2">VIN</td>
         <td className="border px-4 py-2">{vim}</td>
       </tr>
       <tr>
@@ -82,7 +85,7 @@ export default function QrReaderPage() {
 </div>
 
               <button
-                className="mt-8 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                className="mt-8 bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md "
                 onClick={() => setShowQr(true)}
               >
                 Close

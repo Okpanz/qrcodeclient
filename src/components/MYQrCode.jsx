@@ -94,23 +94,28 @@
                   className="cursor-pointer hover:scale-1"
                 />
               </div>
-              <div className="flex gap-8 items-center">
-              <div className="flex items-center gap-4 relative font-bold">
+              <div className="flex gap-8 justify-center flex-row-reverse mr-auto items-center shadow-md p-8 rounded-md">
+              <div className="flex flex-row-reverse items-center gap-4 relative font-bold">
                 <img src={item.qrCodeImage} alt="QR Code" width={120} />
                 {/* Text appearing around the QR code */}
-                <div className="absolute top-0 left-14 transform -translate-x-1/2 -mt-4">SCAN ME</div>
-                <div className="absolute -bottom-5 left-14 transform -translate-x-1/2 mt-4">SAVE ME</div>
-                <div className="absolute left-24 top-11 transform rotate-90 -ml-4">SHARE ME</div>
+                <div className="absolute top-0 left-20 transform -translate-x-1/2 w-full -mt-3">SCAN ME</div>
+                <div className="absolute -bottom-3 left-20 transform -translate-x-1/2 w-full -mt-3">SAVE ME</div>
+                <div className="absolute left-24 top-[4rem] transform rotate-90 w-full -ml-9">SHARE ME</div>
+
               </div>
               {/* Display vehicle information */}
-              <div>
-                <p>Vehicle Idetification No: {item.vehicle?.VIN}</p>
-                <p>Vehicle Name: {item.vehicle?.vehicleName}</p>
-                <p>Vehicle Price: {item.vehicle?.vehiclePrice}</p>
-                <p>Vehicle URL: {item.vehicle?.vehicleURL}</p>
-                <p>Stock No: {item.vehicle?.stockNo}</p>
+              <div className="text-center font-bold">
+                <p> Sale Price: ${item.vehicle?.vehiclePrice}</p>
+                {/* <p> {item.vehicle?.VIN}</p> */}
+                <p> {item.vehicle?.vehicleName}</p>
+                <p> {item.vehicle?.vehicleURL}</p>
+                <div className="flex ">
+                <p className="font-normal relative left-16 -bottom-10">Stock #: {item.vehicle?.stockNo}.</p>
+                <p className="font-normal relative -bottom-10 left-36">VIN: {item.vehicle?.VIN}.</p>
+                </div>
                 {/* You can display other vehicle information similarly */}
               </div>
+            
             </div>
               </div>
           ))}

@@ -10,7 +10,7 @@ const Header = () => {
       </div>
       <div>
         <NavLink to="/auth">
-          <button className="bg-blue-400 text-white px-4 py-2 rounded-md">Login</button>
+          <button className="bg-primary hover:bg-secondary hover:text-primary text-white px-4 py-2 rounded-md">Login</button>
         </NavLink>
       </div>
     </div>
