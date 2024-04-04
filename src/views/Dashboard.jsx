@@ -2,11 +2,11 @@ import React from 'react';
 import Sidebar from './../components/Sidebar';
 import { Outlet } from 'react-router-dom';
 
-const Dashboard = ({ subRoutes }) => {
+const Dashboard = () => {
   return (
-    <div className="flex w-screen">
+    <div className="flex ">
       <Sidebar />
-      <div className="">
+      <div className="w-[80vw]">
         <Outlet />
       </div>
     </div>
