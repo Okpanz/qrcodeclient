@@ -24,6 +24,7 @@ export default function QrReaderPage() {
     setShowQr(false);
     setQrCodeId(qrCodeId)
     console.log("from the handle get qr", JSON.parse(data));
+
     // Trigger GET request when scan is successful
     fetch(`https://server-master-ullz.onrender.com/vehicle/${qrCodeId}`)
       .then((response) => {
