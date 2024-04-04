@@ -14,14 +14,14 @@ export default function QrReaderPage() {
 
   function handleGetQr(data) {
     const [vehicleURL, vehiclePrice, VIM, stockNo] = parseQrResult(
-      JSON.parse(data)
+      JSON.parse(data),
     );
     setVehicleUrl(vehicleURL);
     setVehiclePrice(vehiclePrice);
     setVim(VIM);
     setStockNo(stockNo);
     setShowQr(false);
-    console.log("from the handle get qr", JSON.parse(data));
+
     // Trigger GET request when scan is successful
     fetch("https://server-master-ullz.onrender.com/vehicle/" + vehicleURL)
       .then((response) => {
@@ -52,34 +52,34 @@ export default function QrReaderPage() {
           )}
           {!showQr && (
             <QrResult className="mx-auto">
-            <div className="qr-result-container overflow-x-auto">
-  <table className="table-auto w-full">
-    <thead>
-      <tr>
-        <th className="px-4 py-2">Attribute</th>
-        <th className="px-4 py-2">Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td className="border px-4 py-2">Vehicle URL</td>
-        <td className="border px-4 py-2">{vehicleUrl}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2">Vehicle Price</td>
-        <td className="border px-4 py-2">{vehiclePrice}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2">Vehicle VIM</td>
-        <td className="border px-4 py-2">{vim}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2">Stock NO</td>
-        <td className="border px-4 py-2">{stockNo}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+              <div className="qr-result-container overflow-x-auto">
+                <table className="table-auto w-full">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2">Attribute</th>
+                      <th className="px-4 py-2">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border px-4 py-2">Vehicle URL</td>
+                      <td className="border px-4 py-2">{vehicleUrl}</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">Vehicle Price</td>
+                      <td className="border px-4 py-2">{vehiclePrice}</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">Vehicle VIM</td>
+                      <td className="border px-4 py-2">{vim}</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">Stock NO</td>
+                      <td className="border px-4 py-2">{stockNo}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               <button
                 className="mt-8 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
