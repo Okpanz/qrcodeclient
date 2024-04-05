@@ -30,8 +30,8 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const sidebarItems = [
     { text: "My QR Codes", link: "/dash/qrcodes" },
-    { text: "Create Folder", link: "create" },
-    { text: "Stats", link: "stats" },
+    { text: "Create Folder", link: "/dash/create" },
+    { text: "Stats", link: "/dash/stats" },
     // { text: "Scan QR Code", link: "/scan" },
   ];
 

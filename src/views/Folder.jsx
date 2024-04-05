@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MdDelete, MdEdit, MdFolder } from 'react-icons/md';
+import { MdDelete, MdEdit, MdFolder, MdClose } from 'react-icons/md';
 import { MdCreateNewFolder } from 'react-icons/md';
 import FolderModal from '../components/FolderModal.jsx';
 import axios from 'axios';
@@ -111,22 +111,37 @@ const Folder = () => {
 
       {showModal && selectedFolder && (
   <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
-    <div className='bg-white p-8 rounded-md shadow-lg transition-opacity duration-300'>
-      <h2 className='font-bold text-lg mb-4'>QR Codes in {folders.filter(folder => folder._id ===selectedFolder).map(folder(folder.qrCodes.map(qrCode=>(<p key={qrCode._id}>{qrCode.name}</p>))))} </h2>
+    <div className='bg-white p-8 h-[50vh] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
+      <h2 className='font-bold text-lg mb-4'>QR Codes in {folders.filter(folder => folder._id === selectedFolder).map(folder => folder.name)} </h2>
       <ul>
-        {folders
-          .filter(folder => folder._id === selectedFolder)
-          .map(folder => (
-            folder.qrCodes.map(qrCode => (
-              <div key={qrCode._id} className='flex items-center'>
-                <img src={qrCode.qrCodeImage} width={60} alt="QR Code" />
-                <p>Created At: {formatDate(qrCode.createdAt)}</p>
-                {/* Add more details as needed */}
-              </div>
-            ))
-          ))}
+      {folders
+  .filter(folder => folder._id === selectedFolder)
+  .flatMap(folder => folder.qrCodes)
+  .map(qrCode => (
+    <div key={qrCode._id} className='flex items-center'>
+      <img src={qrCode.qrCodeImage} width={60} alt="QR Code" />
+      <p>Name: {qrCode.name}</p>
+      <p>Created At: {formatDate(qrCode.createdAt)}</p>
+      {/* Add more details as needed */}
+    </div>
+  ))
+}
+
+{folders
+  .filter(folder => folder._id === selectedFolder)
+  .flatMap(folder => folder.qrCodes)
+  .length === 0 && (
+    <p className="bg-red-50   outline-red-500 outline- w-[24rem] p-2 ">No QR codes found for this folder.</p>
+)}
+
       </ul>
-      <button onClick={() => setShowModal(false)}>Close</button>
+      <button 
+        onClick={() => setShowModal(false)} 
+        className="absolute top-[26rem] left-[52rem] text-2xl m-5"
+      >
+        <MdClose className="text-white bg-red-500 rounded-md 2"/>
+      </button>
+      {/* <button onClick={() => setShowModal(false)}><MdClose className="text-white sticky bg-red-500 rounded-md m-5"/></button> */}
     </div>
   </div>
 )}

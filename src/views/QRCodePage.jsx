@@ -6,7 +6,8 @@ import MyQrCode from "../components/MYQrCode.jsx";
 import Modal from "../components/Modal.jsx";
 import axios from 'axios';
 import FolderModal1 from '../components/FolderModal1.jsx';
-
+import {  ToastContainer,toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const QRCodePage = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -22,6 +23,7 @@ const QRCodePage = () => {
       };
       const response = await axios.get('https://server-master-ullz.onrender.com/folder', { headers });
       setFolders(response.data);
+      toast.success('Folder created successfully');
     } catch (error) {
       console.error('Error fetching folders:', error);
     }
@@ -72,9 +74,9 @@ const QRCodePage = () => {
         </div>
       </div>
 
-      {showCreateModal && <Modal endpoint="generate" axiosPost={axios.post} onClose={() => setShowCreateModal(false)} />}
+      {showCreateModal && <Modal endpoint="generate" axiosPost={axios.post} title='Upload Vehicle information' onClose={() => setShowCreateModal(false)} />}
       {showFolderModal && <FolderModal1 onClose={() => setShowFolderModal(false)} />}
-
+<ToastContainer />
     </div>
   );
 };

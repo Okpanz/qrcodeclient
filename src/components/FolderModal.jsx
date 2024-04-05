@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FolderModal = ({ title, onClose }) => {
   const [folder, setFolder] = useState({
@@ -28,12 +30,12 @@ const FolderModal = ({ title, onClose }) => {
       .then(response => {
         console.log('Folder created successfully:', response.data);
         setLoading(false);
-        setMessage(response?.data?.message);
+        toast.success(response?.data?.message);
       })
       .catch(error => {
         setLoading(false);
         console.error('Error creating folder:', error);
-        setMessage(error?.response?.data?.message || 'An error occurred while creating the folder.');
+        toast.error(error?.response?.data?.message || 'An error occurred while creating the folder.');
       });
   };
 
@@ -41,13 +43,6 @@ const FolderModal = ({ title, onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-8 rounded-md shadow-lg w-[50vw] transition-opacity duration-300">
         <h2 className="font-bold text-lg mb-4">{title}</h2>
-        {message && (
-          <div>
-            <p>{message.message}</p>
-            <p>{message.name}</p>
-            <p>{message.code}</p>
-          </div>
-        )}
 
         <div className="mb-4">
           <label htmlFor="folderName" className="block text-sm font-medium text-gray-700">Folder Name</label>
@@ -72,6 +67,7 @@ const FolderModal = ({ title, onClose }) => {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
