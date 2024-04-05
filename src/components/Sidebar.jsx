@@ -4,7 +4,12 @@ import QRLogo from "../assets/QRSS with name svg white.svg";
 import { RiQrCodeLine } from "react-icons/ri";
 import { CiFolderOn } from "react-icons/ci";
 import { IoIosStats } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import { logout } from "./../redux/authSlice";
+
 const Sidebar = () => {
+  const dispatch = useDispatch(); // Get the dispatch function
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [widthChange, setWidthChange] = useState(false);
 
@@ -47,6 +52,12 @@ const Sidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/';
+    
+  };
+
   return (
     <div
       className={`flex flex-col w-64 sm:w-20 bg-white h-screen text-gray-500 `}
@@ -72,7 +83,9 @@ const Sidebar = () => {
         </button>
       </div>
       <div
+        // className={`lg:flex lg:flex-col lg:justify-between lg:w-64 lg:h-screen lg:bg-white lg:text-gray-500 ${isSidebarOpen ? "block" : "hidden"}`}
         className={`lg:flex lg:flex-col lg:justify-between lg:w-64 lg:h-screen lg:bg-white lg:text-gray-500 ${isSidebarOpen ? "block" : "hidden"}`}
+
       >
         <div className="flex items-center justify-center h-20 bg-white sm:hidden">
           <img src={QRLogo} alt="" />
@@ -100,6 +113,14 @@ const Sidebar = () => {
                 </NavLink>
               </li>
             ))}
+            <li>
+              <button
+                onClick={handleLogout}
+                className="block p-4 hover:bg-red-500 hover:text-white cursor-pointer transition-all ease-in-out duration-100 font-bold"
+              >
+                Logout
+              </button>
+            </li>
           </ul>
         </div>
       </div>

@@ -25,6 +25,7 @@ const App = () => {
               <Route path="qrcodes" element={<QRCodePage />} />
               <Route path="create" element={<Folder />} />
               <Route path="stats" element={<Stats />} />
+              <Route path="stats/:qrcodeId" element={<Stats />} />
             </Route>
           </Routes>
         </div>
