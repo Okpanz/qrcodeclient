@@ -1,56 +1,73 @@
-import StatsCard from "../components/StatsCard.jsx";
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-export default function Stats({ totalScan = 0 }) {
-  return (
-    <div
-      className={
-        "px-8 h-screen bg-slate-300 w-[80%] flex flex-wrap  justify-between items-center"
+export default function Stats() {
+  const [statsData, setStatsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const { qrcodeId } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`https://server-master-ullz.onrender.com/vehicle/getstats/${qrcodeId}`);
+        const statsData = response.data;
+        setStatsData(statsData);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
       }
-    >
-      <StatsCard>
-        <h2 className={"mb-4 font-medium text-[#46444a] text-xl md:text-3xl"}>
-          Total Scans
-        </h2>
-        <p className={"mb-8"}>
-          Total scans of your QR code. Counting all scans, <br /> even by the
-          same user
-        </p>
-        <div className={"mb-3"}>icon All Time</div>
-        <span className={"font-bold text-black text-2xl"}>{totalScan}</span>
-      </StatsCard>{" "}
-      <StatsCard>
-        <h2 className={"mb-4 font-medium text-[#46444a] text-xl md:text-3xl"}>
-          Unique Device Scans
-        </h2>
-        <p className={"mb-8"}>
-          Count unique scans of your QR code even if, <br /> scanned multiple
-          times by the same user
-        </p>
-        <div className={"mb-3"}>icon All Time</div>
-        <span className={"font-bold text-black text-2xl"}>{totalScan}</span>
-      </StatsCard>{" "}
-      <StatsCard>
-        <h2 className={"mb-4 font-medium text-[#46444a] text-xl md:text-3xl"}>
-          Total Scans
-        </h2>
-        <p className={"mb-8"}>
-          Total scans of your QR code. Counting all scans, <br /> even by the
-          same user
-        </p>
-        <div className={"mb-3"}>icon All Time</div>
-        <span className={"font-bold text-black text-2xl"}>{totalScan}</span>
-      </StatsCard>{" "}
-      <StatsCard>
-        <h2 className={"mb-4 font-medium text-[#46444a] text-xl md:text-3xl"}>
-          Unique Device Scans
-        </h2>
-        <p className={"mb-8"}>
-          Count unique scans of your QR code even if, <br /> scanned multiple
-          times by the same user
-        </p>
-        <div className={"mb-3"}>icon All Time</div>
-        <span className={"font-bold text-black text-2xl"}>{totalScan}</span>
-      </StatsCard>
+    };
+
+    fetchData();
+  }, [qrcodeId]);
+
+  return (
+    <div className="container p-10 h-screen">
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {statsData && (
+        <div>
+          <h2 className="text-center font-bold">Scans Data:</h2>
+          <table className="stats-table">
+            <tbody>
+              <tr>
+                <td>VIN:</td>
+                <td>{statsData.VIN}</td>
+              </tr>
+              <tr>
+                <td>createdAt:</td>
+                <td>{statsData.createdAt}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Scan History:</h2>
+          <table className="stats-table">
+            <thead>
+              <tr>
+                <th>Scan Number</th>
+                <th>Scan Time</th>
+                <th>Number of Times Scanned</th>
+                <th>Scanned By Device</th>
+              </tr>
+            </thead>
+            <tbody>
+              {statsData.scanHistory.map((scan, index) => (
+                <tr key={index}>
+                  <td>{scan.scanNumber}</td>
+                  <td>{scan.scanTime}</td>
+                  <td>{scan.numberOfTimesScanned}</td>
+                  <td>{scan.scannedByDevice}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

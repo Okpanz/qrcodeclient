@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { login } from '../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 import LoginIllustration from '../assets/undraw_secure_login_pdn4.svg'; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -27,12 +29,20 @@ const Login = () => {
     setError(null);
     try {
       const response = await dispatch(login(credentials));
-      console.log('Login response:', response.payload.message);
+      console.log('Login response:', response?.error?.message);
+      if(response.payload?.error?.message ){
+
+        toast.error(response?.error.message.toString())
+      }
       if(response.payload.message === "Login successful"){
-        history('/dash/qrcodes'); 
+        setTimeout(() => {
+          toast.success('Login Successful')
+          
+          history('/dash/qrcodes'); 
+        }, 1500);
       }
     } catch (error) {
-      console.error('Login error:', error.message);
+      console.error('Login error:', error);
       setError(error.message);
     } finally {
       setIsLoading(false);
@@ -62,6 +72,7 @@ const Login = () => {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };
