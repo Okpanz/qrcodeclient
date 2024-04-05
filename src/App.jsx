@@ -9,10 +9,13 @@ import QRCodePage from "./views/QRCodePage.jsx";
 import Stats from "./views/Stats.jsx";
 import QrReaderPage from "./views/QrReaderPage.jsx";
 import AuthPage from "./views/AuthPage.jsx";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
     <Provider store={store}>
+       {/* <ToastCont12ainer > */}
       <Router>
         <div className="flex w-screen">
           <Routes>
@@ -26,6 +29,7 @@ const App = () => {
           </Routes>
         </div>
       </Router>
+      <ToastContainer />
     </Provider>
   );
 };

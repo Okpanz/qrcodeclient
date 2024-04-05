@@ -4,6 +4,7 @@ import QrResult from "../components/QrResult.jsx";
 import React, { useState, useEffect } from "react";
 import { parseQrResult } from "../utils/utils.js";
 import Header from "./Header.jsx";
+import axios from 'axios'
 
 export default function QrReaderPage() {
   const [vehicleUrl, setVehicleUrl] = useState("");
@@ -11,7 +12,8 @@ export default function QrReaderPage() {
   const [vim, setVim] = useState("");
   const [stockNo, setStockNo] = useState("");
   const [showQr, setShowQr] = useState(true);
-  const [qrCodeId, setQrCodeId] = useState()
+  const [qrCodeId, setQrCodeId] = useState();
+  const [vehicleName, setVehicleName] = useState();
 
   function handleGetQr(data) {
     const [vehicleURL, vehiclePrice, VIM, stockNo, qrCodeId] = parseQrResult(
@@ -22,17 +24,19 @@ export default function QrReaderPage() {
     setVim(VIM);
     setStockNo(stockNo);
     setShowQr(false);
-    setQrCodeId(qrCodeId)
+    setQrCodeId(qrCodeId);
+    setVehicleName(vehicleName);
     console.log("from the handle get qr", JSON.parse(data));
 
     // Trigger GET request when scan is successful
-    fetch(`https://server-master-ullz.onrender.com/vehicle/${qrCodeId}`)
+    axios.get(`https://server-master-ullz.onrender.com/vehicle/scan/${qrCodeId}`)
       .then((response) => {
-        if (!response.ok) {
+        if (response.status === 200) {
+          console.log("GET request successful:", response.data);
+          // Handle response data if needed
+        } else {
           throw new Error("Network response was not ok");
         }
-        // Handle response data if needed
-        console.log(response)
       })
       .catch((error) => {
         console.error("There was a problem with the GET request:", error);
@@ -41,7 +45,7 @@ export default function QrReaderPage() {
 
   useEffect(() => {
     const getResult = localStorage.getItem("qrCode");
-    console.log(` Items is : ${getResult}`);
+    console.log(`Items is : ${getResult}`);
   }, []);
 
   return (
@@ -56,37 +60,36 @@ export default function QrReaderPage() {
           )}
           {!showQr && (
             <QrResult className="mx-auto">
-            <div className="qr-result-container overflow-x-auto">
-  <table className="table-auto w-full">
-    <thead>
-      <tr>
-        <th className="px-4 py-2">Attribute</th>
-        <th className="px-4 py-2">Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td className="border px-4 py-2">Vehicle URL</td>
-        <td className="border px-4 py-2">{vehicleUrl}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2">Vehicle Price</td>
-        <td className="border px-4 py-2">{vehiclePrice}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2">VIN</td>
-        <td className="border px-4 py-2">{vim}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2">Stock NO</td>
-        <td className="border px-4 py-2">{stockNo}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+              <div className="qr-result-container overflow-x-auto">
+                <table className="table-auto w-full">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2">Attribute</th>
+                      <th className="px-4 py-2">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border px-4 py-2">Vehicle URL</td>
+                      <td className="border px-4 py-2">{vehicleUrl}</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">Vehicle Price</td>
+                      <td className="border px-4 py-2">{vehiclePrice}</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">VIN</td>
+                      <td className="border px-4 py-2">{vim}</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">Stock NO</td>
+                      <td className="border px-4 py-2">{stockNo}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <button
-                className="mt-8 bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md "
+                className="mt-8 bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md"
                 onClick={() => setShowQr(true)}
               >
                 Close
