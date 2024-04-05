@@ -6,6 +6,7 @@ import { CiFolderOn } from "react-icons/ci";
 import { IoIosStats } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import { logout } from "./../redux/authSlice";
+import { MdLogout } from "react-icons/md";
 
 const Sidebar = () => {
   const dispatch = useDispatch(); // Get the dispatch function
@@ -36,7 +37,7 @@ const Sidebar = () => {
   const sidebarItems = [
     { text: "My QR Codes", link: "/dash/qrcodes" },
     { text: "Create Folder", link: "/dash/create" },
-    { text: "Stats", link: "/dash/stats" },
+    // { text: "Stats", link: "/dash/stats" },
     // { text: "Scan QR Code", link: "/scan" },
   ];
 
@@ -116,9 +117,9 @@ const Sidebar = () => {
             <li>
               <button
                 onClick={handleLogout}
-                className="block p-4 hover:bg-red-500 hover:text-white cursor-pointer transition-all ease-in-out duration-100 font-bold"
+                className="p-4 flex items-center justify-center hover:bg-red-500 hover:text-white bg-red-600 text-white w-full cursor-pointer transition-all ease-in-out duration-100 font-bold"
               >
-                Logout
+                <MdLogout /> Logout
               </button>
             </li>
           </ul>

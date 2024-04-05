@@ -3,12 +3,16 @@ import { MdDelete, MdEdit, MdFolder, MdClose } from 'react-icons/md';
 import { MdCreateNewFolder } from 'react-icons/md';
 import FolderModal from '../components/FolderModal.jsx';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Folder = () => {
   const [folders, setFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showModal1, setShowModal1] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchFolders();
@@ -18,7 +22,9 @@ const Folder = () => {
     const date = new Date(timestamp);
     return date.toLocaleString(); 
   };
+
   const fetchFolders = () => {
+    setLoading(true);
     const token = JSON.parse(localStorage.getItem('user')).token;
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -29,18 +35,64 @@ const Folder = () => {
       .get('https://server-master-ullz.onrender.com/folder', { headers })
       .then((response) => {
         setFolders(response.data);
-        console.log(response.data); // Add this line to log the folders
+        setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching folder information:', error);
+        setLoading(false);
+        toast.error('Failed to fetch folders');
       });
   };
   
-
   const handleFolderClick = (folderId) => {
     setSelectedFolder(folderId);
-    console.log(selectedFolder)
     setShowModal(true);
+  };
+
+  const handleEditFolder = () => {
+    setLoading(true);
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
+    axios
+      .put(`https://server-master-ullz.onrender.com/folder/update/${selectedFolder}`, { name: newFolderName }, { headers })
+      .then((response) => {
+        fetchFolders(); // Fetch folders again after updating
+        setShowModal(false);
+        setNewFolderName(''); // Reset the new folder name state
+        setLoading(false);
+        toast.success('Folder updated successfully');
+      })
+      .catch((error) => {
+        console.error('Error updating folder:', error);
+        setLoading(false);
+        toast.error('Failed to update folder');
+      });
+  };
+
+  const handleDeleteFolder = (folderId) => {
+    setLoading(true);
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
+    axios
+      .delete(`https://server-master-ullz.onrender.com/folder/delete/${folderId}`, { headers })
+      .then((response) => {
+        fetchFolders(); // Fetch folders again after deletion
+        setLoading(false);
+        toast.success('Folder deleted successfully');
+      })
+      .catch((error) => {
+        console.error('Error deleting folder:', error);
+        setLoading(false);
+        toast.error('Failed to delete folder');
+      });
   };
 
   const handleCreateFolder = () => {
@@ -49,6 +101,8 @@ const Folder = () => {
 
   return (
     <div className='h-screen bg-slate-300 flex flex-col gap-2 justify-center items-center'>
+      <ToastContainer />
+      {loading && <div className="fixed top-0 left-0 right-0 bottom-0 text-white bg-black flex justify-center items-center opacity-50 z-50">Loading....</div>}
       <button
         onClick={handleCreateFolder}
         className='absolute right-0 top-0 m-10 p-3 rounded-sm bg-blue-300 flex items-center gap-2 text-blue-800'
@@ -95,7 +149,7 @@ const Folder = () => {
                       <button className='text-blue-600 hover:text-blue-900'>
                         <MdEdit />
                       </button>
-                      <button className='text-red-600 hover:text-red-900 ml-2'>
+                      <button className='text-red-600 hover:text-red-900 ml-2' onClick={() => handleDeleteFolder(folder._id)}>
                         <MdDelete />
                       </button>
                     </td>
@@ -110,42 +164,28 @@ const Folder = () => {
       {showModal1 && <FolderModal title='Create Folder' action='Create Folder' onClose={() => setShowModal1(false)} />}
 
       {showModal && selectedFolder && (
-  <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
-    <div className='bg-white p-8 h-[50vh] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
-      <h2 className='font-bold text-lg mb-4'>QR Codes in {folders.filter(folder => folder._id === selectedFolder).map(folder => folder.name)} </h2>
-      <ul>
-      {folders
-  .filter(folder => folder._id === selectedFolder)
-  .flatMap(folder => folder.qrCodes)
-  .map(qrCode => (
-    <div key={qrCode._id} className='flex items-center'>
-      <img src={qrCode.qrCodeImage} width={60} alt="QR Code" />
-      <p>Name: {qrCode.name}</p>
-      <p>Created At: {formatDate(qrCode.createdAt)}</p>
-      {/* Add more details as needed */}
-    </div>
-  ))
-}
-
-{folders
-  .filter(folder => folder._id === selectedFolder)
-  .flatMap(folder => folder.qrCodes)
-  .length === 0 && (
-    <p className="bg-red-50   outline-red-500 outline- w-[24rem] p-2 ">No QR codes found for this folder.</p>
-)}
-
-      </ul>
-      <button 
-        onClick={() => setShowModal(false)} 
-        className="absolute top-[26rem] left-[52rem] text-2xl m-5"
-      >
-        <MdClose className="text-white bg-red-500 rounded-md 2"/>
-      </button>
-      {/* <button onClick={() => setShowModal(false)}><MdClose className="text-white sticky bg-red-500 rounded-md m-5"/></button> */}
-    </div>
-  </div>
-)}
-
+        <div className='fixed inset-0 flex items-center justify-center bg-black  bg-opacity-50 z-50 overflow-y-scroll'>
+          <div className='bg-white p-8 h-[60vh] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
+            <h2 className='font-bold text-lg mb-4'>Edit Folder</h2>
+            <input
+              type='text'
+              placeholder='New Folder Name'
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+              className='w-full border border-gray-300 p-2 rounded-md mb-4'
+            />
+            <button onClick={handleEditFolder} className='bg-blue-500 text-white px-4 py-2 rounded-md'>
+             {loading? 'Updating...' : 'Update Folder'}
+            </button>
+            <button 
+              onClick={() => setShowModal(false)} 
+              className="absolute top-[26rem] left-[52rem] text-2xl m-5"
+            >
+              <MdClose className="text-white bg-red-500 rounded-md 2"/>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
