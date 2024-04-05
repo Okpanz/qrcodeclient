@@ -35,12 +35,16 @@ export default function Stats() {
           <table className="stats-table">
             <tbody>
               <tr>
-                <td>VIN:</td>
+                <td className="label">VIN:</td>
                 <td>{statsData.VIN}</td>
               </tr>
               <tr>
-                <td>createdAt:</td>
+                <td className="label">createdAt:</td>
                 <td>{statsData.createdAt}</td>
+              </tr>
+              <tr>
+                <td className="label">Total Scans</td>
+                <td>{statsData.scanHistory.length}</td>
               </tr>
             </tbody>
           </table>
@@ -51,7 +55,7 @@ export default function Stats() {
               <tr>
                 <th>Scan Number</th>
                 <th>Scan Time</th>
-                <th>Number of Times Scanned</th>
+                {/* <th>Number of Times Scanned</th> */}
                 <th>Scanned By Device</th>
               </tr>
             </thead>
@@ -60,7 +64,7 @@ export default function Stats() {
                 <tr key={index}>
                   <td>{scan.scanNumber}</td>
                   <td>{scan.scanTime}</td>
-                  <td>{scan.numberOfTimesScanned}</td>
+                  {/* <td>{scan.numberOfTimesScanned}</td> */}
                   <td>{scan.scannedByDevice}</td>
                 </tr>
               ))}

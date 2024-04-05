@@ -111,13 +111,13 @@ export default function MyQrCode({
               {/* Add a Link to view stats */}
               <Link to={`/dash/stats/${item._id}`} className="text-blue-500">View Stats</Link>
             </div>
-            <div className="flex gap-8 justify-center flex-row-reverse mr-auto items-center shadow-md p-8 rounded-md">
-            <div className="flex flex-row-reverse items-center gap-4 relative font-bold">
-              <img src={item.qrCodeImage} alt="QR Code" width={120} id={`qr-code-${item._id}`}/>
+            <div className="flex gap-8 justify-center flex-row-reverse mr-auto items-center shadow-md p-10 bg-white rounded-md" id={`qr-code-${item._id}`}>
+            <div className="flex flex-row-reverse items-center gap-4 relative font-bold bg-white">
+              <img src={item.qrCodeImage} alt="QR Code" width={120} />
               {/* Text appearing around the QR code */}
-              <div className="absolute top-0 left-20 transform -translate-x-1/2 w-full -mt-3">SCAN ME</div>
+              <div className="absolute top-0 left-20 transform -translate-x-1/2 w-full -mt-5 ">SCAN ME</div>
               <div className="absolute -bottom-3 left-20 transform -translate-x-1/2 w-full -mt-3">SAVE ME</div>
-              <div className="absolute left-24 top-[4rem] transform rotate-90 w-full -ml-9">SHARE ME</div>
+              <div className="absolute left-24 top-[4rem] transform rotate-90 w-full -ml-6">SHARE ME</div>
 
             </div>
             {/* Display vehicle information */}
@@ -125,7 +125,9 @@ export default function MyQrCode({
               <p> Sale Price: ${item.vehicle?.vehiclePrice}</p>
               {/* <p> {item.vehicle?.VIN}</p> */}
               <p> {item.vehicle?.vehicleName}</p>
-              <p> {item.vehicle?.vehicleURL}</p>
+              <Link to={item.vehicle?.vehicleURL}>
+              <p className="text-blue-600"> Vehicle URL</p>
+              </Link>
               <div className="flex ">
               <p className="font-normal relative left-16 -bottom-10">Stock #: {item.vehicle?.stockNo}.</p>
               <p className="font-normal relative -bottom-10 left-36">VIN: {item.vehicle?.VIN}.</p>
