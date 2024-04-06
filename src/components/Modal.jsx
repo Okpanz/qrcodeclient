@@ -30,7 +30,7 @@ const colorMap = {
   teal: 'teal',
 };
 
-const Modal = ({ title, onClose, endpoint, axiosPost }) => {
+const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
   const [vehicleDetails, setVehicleDetails] = useState({
     vehicleURL: '',
     vehiclePrice: '',
@@ -40,6 +40,8 @@ const Modal = ({ title, onClose, endpoint, axiosPost }) => {
     docFee: '',
     foregroundColor: '',
     backgroundColor: 'white',
+    DealerName: '',
+    qrName: '',
     imageFile: null,
   });
   const [loading, setLoading] = useState(false);
@@ -114,6 +116,20 @@ const Modal = ({ title, onClose, endpoint, axiosPost }) => {
        
         
         <div className="mb-4">
+          <label htmlFor="qrName" className="block text-sm font-medium text-gray-700">
+            QR Name
+          </label>
+          <input
+            type="text"
+            id="qrName"
+            name="qrName"
+            value={vehicleDetails.qrName}
+            onChange={handleChange}
+            className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Enter Qr Name"
+          />
+        </div>
+        <div className="mb-4">
           <label htmlFor="vehicleURL" className="block text-sm font-medium text-gray-700">
             Vehicle URL
           </label>
@@ -164,6 +180,20 @@ const Modal = ({ title, onClose, endpoint, axiosPost }) => {
             id="stockNo"
             name="stockNo"
             value={vehicleDetails.stockNo}
+            onChange={handleChange}
+            className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Enter stock number"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="stockNo" className="block text-sm font-medium text-gray-700">
+          Dealer Name
+          </label>
+          <input
+            type="text"
+            id="DealerName"
+            name="DealerName"
+            value={vehicleDetails.DealerName}
             onChange={handleChange}
             className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Enter stock number"

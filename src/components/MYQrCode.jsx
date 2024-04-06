@@ -1,32 +1,48 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { BsQrCode } from "react-icons/bs";
-import Modal from "../components/Modal.jsx";
-import { HiOutlinePencil, HiOutlineFolder } from "react-icons/hi";
+import { HiOutlinePencil } from "react-icons/hi";
 import html2canvas from 'html2canvas';
-import { MdDownload } from "react-icons/md";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { MdDelete, MdDownload } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-export default function MyQrCode({
-  checkedAll,
-  
-  qrCode = <BsQrCode size={120} />,
-  qrLink = "https://me-qr.com/XIGZJRNF",
-  type = "Text",
-  created = new Date(),
-}) {
+const MyQrCode = ({
+  onSelect,
+  onSort,
+  onFilter
+}) => {
   const [vehicleInfo, setVehicleInfo] = useState([]);
-  const [editModal, setEditModal] = useState(false);
-  const [folders, setFolders] = useState([]);
+  const [editModal, setEditModal] = useState({ open: false, id: null }); // Modify editModal state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState(null);
+  const [filterBy, setFilterBy] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [qrName, setQrName] = useState(""); // State for qrName input
+  const [deleting, setDeleting] = useState(false); // Flag to indicate delete operation in progress
 
   useEffect(() => {
     fetchVehicleInfo();
   }, []);
 
   useEffect(() => {
-    // Log vehicleInfo whenever it changes
     console.log(vehicleInfo);
-  }, [vehicleInfo]); // Dependency array ensures this effect runs when vehicleInfo changes
+  }, [vehicleInfo]);
+
+  useEffect(() => {
+    if (selectedItemId && !deleting) {
+      const qrCodeSection = document.getElementById(`qr-code-${selectedItemId}`);
+      if (qrCodeSection) {
+        html2canvas(qrCodeSection).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'qrcode.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        });
+      } else {
+        console.error(`QR code section with ID 'qr-code-${selectedItemId}' not found.`);
+      }
+    }
+  }, [selectedItemId, deleting]);
 
   const fetchVehicleInfo = () => {
     const token = JSON.parse(localStorage.getItem('user')).token;
@@ -40,124 +56,189 @@ export default function MyQrCode({
       headers: headers
     })
     .then(response => {
-      setVehicleInfo(response.data);
+      const sortedVehicleInfo = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setVehicleInfo(sortedVehicleInfo);
     })
     .catch(error => {
       console.error('Error fetching vehicle information:', error);
     });
   };
 
-  const fetchFolders = () => {
+  const downloadQRCode = (qrCodeId) => {
+    if (!deleting) { // Check if delete operation is not in progress
+      const qrCodeSection = document.getElementById(`qr-code-${qrCodeId}`);
+      html2canvas(qrCodeSection).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'qrcode.png'; 
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  };
+  
+  const handleCheckboxChange = (event, itemId) => {
+    console.log("Checkbox with ID", itemId, "was clicked");
+    onSelect(itemId);
+  };
+
+  const handleDeleteButtonClick = (itemId) => {
+    setSelectedItemId(itemId);
+    setDeleting(true); // Set deleting flag to true
+    deleteItem(itemId);
+  };
+
+  const handleEditButtonClick = (itemId) => {
+    setEditModal({ open: true, id: itemId }); // Set editModal state with ID
+  };
+
+  const handleSearchQueryChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleQrNameChange = (event) => {
+    setQrName(event.target.value);
+  };
+
+  const deleteItem = (itemId) => {
     const token = JSON.parse(localStorage.getItem('user')).token;
     
     const headers = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
-    
-    axios.get('https://server-master-ullz.onrender.com/folder', {
+
+    axios.delete(`https://server-master-ullz.onrender.com/vehicle/${itemId}`, {
       headers: headers
     })
     .then(response => {
-      setFolders(response.data);
-      console.log(response.data.map((item) => {
-        item
-      }))
+      console.log('Item deleted successfully:', response.data);
+      setSelectedItemId(null);
+      setDeleting(false); // Reset deleting flag
+      fetchVehicleInfo();
     })
     .catch(error => {
-      console.error('Error fetching folders:', error);
+      console.error('Error deleting item:', error);
     });
   };
 
-  const handleCheckboxChange = (event, itemId) => {
-    console.log("Checkbox with ID", itemId, "was clicked");
-    localStorage.setItem('qrcodeId', itemId)
-  };
+  const filteredVehicleInfo = vehicleInfo.filter((item) =>
+    item.vehicle?.vehicleName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleFolderIconClick = () => {
-    fetchFolders();
-    console.log(folders)
-  };
-
-  const downloadQRCode = (qrCodeId) => {
-    const qrCodeSection = document.getElementById(`qr-code-${qrCodeId}`); 
+  // Function to handle editing qrName
+  const handleEditQrName = () => {
+    const token = JSON.parse(localStorage.getItem('user')).token;
     
-    html2canvas(qrCodeSection).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'qrcode.png'; // Set the filename for the downloaded image
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+
+    axios.patch(`https://server-master-ullz.onrender.com/vehicle/${editModal.id}`, { qrName: qrName }, {
+      headers: headers
+    })
+    .then(response => {
+      console.log('QR Name updated successfully:', response.data);
+      // Close the modal after successful update
+      setEditModal({ open: false, id: null });
+      // Refetch vehicle info to reflect changes
+      fetchVehicleInfo();
+    })
+    .catch(error => {
+      console.error('Error updating QR Name:', error);
     });
   };
 
   return (
     <section className="qr-border qr-rounded p-4 overflow-y-scroll">
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={handleSearchQueryChange}
+        className="border border-gray-300 rounded-md px-3 py-2 mb-4"
+      />
       <div className="flex flex-col gap-4">
-        {vehicleInfo.map((item, index) => (
-          <div key={index} className="flex flex-col gap-2 p-5">
-            <div className="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                onChange={(event) => handleCheckboxChange(event, item._id)}
-              />
-              <label>QR Code</label>
-              <button onClick={() => downloadQRCode(item._id)}><MdDownload /></button>
-              <HiOutlinePencil
-                onClick={() => setEditModal(true)}
-                color="#a480ae"
-                size={20}
-                className="cursor-pointer hover:scale-1"
-              />
-              {/* Add a Link to view stats */}
-              <Link to={`/dash/stats/${item._id}`} className="text-blue-500">View Stats</Link>
-            </div>
-            <div className="flex gap-8 justify-center flex-row-reverse mr-auto items-center shadow-md p-10 bg-white rounded-md" id={`qr-code-${item._id}`}>
-            <div className="flex flex-row-reverse items-center gap-4 relative font-bold bg-white">
-              <img src={item.qrCodeImage} alt="QR Code" width={120} />
-              {/* Text appearing around the QR code */}
-              <div className="absolute top-0 left-20 transform -translate-x-1/2 w-full -mt-5 ">SCAN ME</div>
-              <div className="absolute -bottom-3 left-20 transform -translate-x-1/2 w-full -mt-3">SAVE ME</div>
-              <div className="absolute left-24 top-[4rem] transform rotate-90 w-full -ml-6">SHARE ME</div>
-
-            </div>
-            {/* Display vehicle information */}
-            <div className="text-center font-bold">
-              <p> Sale Price: ${item.vehicle?.vehiclePrice}</p>
-              {/* <p> {item.vehicle?.VIN}</p> */}
-              <p> {item.vehicle?.vehicleName}</p>
-              <Link to={item.vehicle?.vehicleURL}>
-              <p className="text-blue-600"> Vehicle URL</p>
-              </Link>
-              <div className="flex ">
-              <p className="font-normal relative left-16 -bottom-10">Stock #: {item.vehicle?.stockNo}.</p>
-              <p className="font-normal relative -bottom-10 left-36">VIN: {item.vehicle?.VIN}.</p>
+        {filteredVehicleInfo.map((item, index) => (
+          <div key={index} className="qr-card-container">
+            <div className="flex flex-col gap-2 p-5">
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  onChange={(event) => handleCheckboxChange(event, item._id)}
+                />
+                <label>{item?.qrName} </label>
+                <button onClick={() => handleDeleteButtonClick(item._id)}> 
+                  <MdDelete />
+                </button>
+                <button onClick={() => downloadQRCode(item._id)}>
+                  <MdDownload />
+                </button>
+                <HiOutlinePencil
+                  onClick={() => handleEditButtonClick(item._id)} // Pass item._id to the handler
+                  color="#a480ae"
+                  size={20}
+                  className="cursor-pointer hover:scale-1"
+                />
+                <Link to={`/dash/stats/${item._id}`} className="text-blue-500">
+                  View Stats
+                </Link>
               </div>
-              {/* You can display other vehicle information similarly */}
+              <div className="bg-white" id={`qr-code-${item._id}`}>
+
+              <div className="flex gap-8 justify-center w-full flex-row-reverse mr-auto items-center shadow-md p-10 bg-white rounded-md" >
+                <div className="flex flex-row-reverse items-center gap-4 relative font-bold bg-white ml-auto">
+                  <img src={item.qrCodeImage} alt="QR Code" width={120} />
+                  <div className="absolute top-0 left-20 transform -translate-x-1/2 w-full -mt-5 ">
+                    SCAN ME
+                  </div>
+                  <div className="absolute -bottom-3 left-20 transform -translate-x-1/2 w-full -mt-3">
+                    SAVE ME
+                  </div>
+                  <div className="absolute left-24 top-[4rem] transform rotate-90 w-full -ml-6">
+                    SHARE ME
+                  </div>
+                </div>
+                <div className="text-center font-bold ml-auto">
+                  <p> Sale Price: ${item.vehicle?.vehiclePrice}</p>
+                  <p> Doc Fee: {item.vehicle?.docFee}</p>
+                  <p>  {item.vehicle?.vehicleName}</p>
+                  <Link to={item.vehicle?.vehicleURL}>
+                    <p className="text-blue-600"> Vehicle URL</p>
+                  </Link>
+                  <div className="flex mt-10">
+                    <p className="font-normal relative left-20 -bottom-8">
+                      Stock #: {item.vehicle?.stockNo}.
+                    </p>
+                    <p className="font-normal relative -bottom-8 left-44">
+                      VIN: {item.vehicle?.VIN}.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              </div>
             </div>
-          
           </div>
-            </div>
         ))}
       </div>
-
-      <div className="flex items-center gap-2 mt-4">
-        <HiOutlineFolder 
-          onClick={handleFolderIconClick} 
-          color="#a480ae" 
-          size={20} 
-          className="cursor-pointer hover:scale-1"
-        />
-        <span>Fetch Folders</span>
-      </div>
-
-      {editModal && 
-        <Modal 
-          title="Edit Vehicle Information"
-          action="Update Qr"
-          onClose={() => setEditModal(false)}
-        />
-      }
+      {editModal.open && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setEditModal({ open: false, id: null })}>&times;</span>
+            <h2>Edit QR Name</h2>
+            <input
+              type="text"
+              value={qrName}
+              onChange={handleQrNameChange}
+              placeholder="Enter new QR Name"
+              className="border border-gray-300 rounded-md px-3 py-2 mb-4"
+            />
+            <button onClick={handleEditQrName}>Update QR Name</button>
+          </div>
+        </div>
+      )}
     </section>
   );
-  
-}
+};
+
+export default MyQrCode;

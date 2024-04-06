@@ -7,6 +7,7 @@ import { IoIosStats } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import { logout } from "./../redux/authSlice";
 import { MdLogout } from "react-icons/md";
+import { BsQrCodeScan } from "react-icons/bs";
 
 const Sidebar = () => {
   const dispatch = useDispatch(); // Get the dispatch function
@@ -36,14 +37,16 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const sidebarItems = [
     { text: "My QR Codes", link: "/dash/qrcodes" },
-    { text: "Create Folder", link: "/dash/create" },
-    // { text: "Stats", link: "/dash/stats" },
+    { text: "Create QR", link: "/dash/createQR" },
+    { text: "Folders", link: "/dash/create" },
+    { text: "Stats", link: "/dash/stats" },
     // { text: "Scan QR Code", link: "/scan" },
   ];
 
   const sidebarIcons = (key) => {
     return [
       <RiQrCodeLine key={key} />,
+      <BsQrCodeScan key={key} />,
       <CiFolderOn key={key} />,
       <IoIosStats key={key} />,
     ][key];
@@ -61,7 +64,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`flex flex-col w-64 sm:w-20 bg-white h-screen text-gray-500 `}
+      className={`flex flex-col w-64 sm:w-20 bg-white h-screen text-gray-500 fixed `}
     >
       <div className="lg:hidden">
         <button
@@ -117,7 +120,7 @@ const Sidebar = () => {
             <li>
               <button
                 onClick={handleLogout}
-                className="p-4 flex items-center justify-center hover:bg-red-500 hover:text-white bg-red-600 text-white w-full cursor-pointer transition-all ease-in-out duration-100 font-bold"
+                className="p-4 flex items-center justify-center  text-red-600   w-full cursor-pointer transition-all ease-in-out duration-100 font-bold"
               >
                 <MdLogout /> Logout
               </button>
