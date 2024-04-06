@@ -100,9 +100,9 @@ const Folder = () => {
   };
 
   return (
-    <div className='h-screen bg-slate-300 flex flex-col gap-2 justify-center items-center'>
+    <div className='h-screen bg-slate-300 flex flex-col gap-2 justify-center items-center w-screen ' >
       <ToastContainer />
-      {loading && <div className="fixed top-0 left-0 right-0 bottom-0 text-white bg-black flex justify-center items-center opacity-50 z-50">Loading....</div>}
+      {loading && <div className="fixed top-0 left-0 right-0 bottom-0 w-[90%] text-white bg-black flex justify-center items-center opacity-50 z-50">Loading....</div>}
       <button
         onClick={handleCreateFolder}
         className='absolute right-0 top-0 m-10 p-3 rounded-sm bg-blue-300 flex items-center gap-2 text-blue-800'
@@ -110,8 +110,8 @@ const Folder = () => {
         Create Folder <MdCreateNewFolder />
       </button>
       <h1 className='font-bold'>Folders</h1>
-      <div className='flex h-[70vh] gap-4'>
-        <div className='w-[60rem] bg-white rounded-sm border border-gray-300'>
+      <div className='flex h-[70vh] gap-4 justify-center'>
+        <div className='w-[50rem] bg-white rounded-sm border border-gray-300'>
           <div className='p-4'>
             <table className='min-w-full divide-y divide-gray-200'>
               <thead className='bg-gray-50'>

@@ -26,17 +26,18 @@ export default function Stats() {
   }, [qrcodeId]);
 
   return (
-    <div className="container p-10 h-screen">
+    <div className="container p-10 h-screen flex justify-center w-screen">
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
       {statsData && (
+        <div className="container p-10 h-screen w-[50vw]  justify-center items-center">
         <div>
           <h2 className="text-center font-bold">Scans Data:</h2>
-          <table className="stats-table">
+          <table className="stats-table mx-auto">
             <tbody>
               <tr>
-                <td className="label">VIN:</td>
-                <td>{statsData.VIN}</td>
+                <td className="">VIN:</td>
+                <td>VIN{statsData.VIN}</td>
               </tr>
               <tr>
                 <td className="label">createdAt:</td>
@@ -48,6 +49,7 @@ export default function Stats() {
               </tr>
             </tbody>
           </table>
+        </div>
 
           <h2>Scan History:</h2>
           <table className="stats-table">
