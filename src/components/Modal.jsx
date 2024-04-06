@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { IoQrCodeOutline } from 'react-icons/io5';
 import QRCode from 'qrcode.react'; // Import QRCode component
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const colorMap = {
@@ -97,7 +98,9 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
         console.log('Vehicle created successfully:', response.data);
         setLoading(false);
         setMessage(response?.message);
-        toast.success('Successful');
+        toast.success('Vehicle created successfully');
+        onClose(true)
+        window.href="#"
       })
       .catch((error) => {
         setLoading(false);
@@ -115,20 +118,7 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
         <h2 className="font-bold text-lg mb-4">{title}</h2>
        
         
-        <div className="mb-4">
-          <label htmlFor="qrName" className="block text-sm font-medium text-gray-700">
-            QR Name
-          </label>
-          <input
-            type="text"
-            id="qrName"
-            name="qrName"
-            value={vehicleDetails.qrName}
-            onChange={handleChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter Qr Name"
-          />
-        </div>
+       
         <div className="mb-4">
           <label htmlFor="vehicleURL" className="block text-sm font-medium text-gray-700">
             Vehicle URL
@@ -139,8 +129,8 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
             name="vehicleURL"
             value={vehicleDetails.vehicleURL}
             onChange={handleChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter vehicle URL"
+            className="mt-1 p-2 block w-full rounded-md border-gray-300 placeholder:italic focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Enter vehicle URL e.g(http://example.com)"
           />
         </div>
         <div className="mb-4">

@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "./../redux/authSlice";
 import { MdLogout } from "react-icons/md";
 import { BsQrCodeScan } from "react-icons/bs";
-
+ 
 const Sidebar = () => {
   const dispatch = useDispatch(); // Get the dispatch function
 
@@ -36,8 +36,8 @@ const Sidebar = () => {
 
   const { pathname } = useLocation();
   const sidebarItems = [
-    { text: "My QR Codes", link: "/dash/qrcodes" },
     { text: "Create QR", link: "/dash/createQR" },
+    { text: "My QR Codes", link: "/dash/qrcodes" },
     { text: "Folders", link: "/dash/create" },
     { text: "Stats", link: "/dash/stats" },
     // { text: "Scan QR Code", link: "/scan" },
@@ -45,8 +45,8 @@ const Sidebar = () => {
 
   const sidebarIcons = (key) => {
     return [
-      <RiQrCodeLine key={key} />,
       <BsQrCodeScan key={key} />,
+      <RiQrCodeLine key={key} />,
       <CiFolderOn key={key} />,
       <IoIosStats key={key} />,
     ][key];

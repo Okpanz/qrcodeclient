@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BsQrCode } from "react-icons/bs";
 import { HiOutlinePencil } from "react-icons/hi";
 import html2canvas from 'html2canvas';
-import { MdDelete, MdDownload } from "react-icons/md";
+import { MdDelete, MdDownload, MdSearch } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const MyQrCode = ({
@@ -78,6 +78,7 @@ const MyQrCode = ({
   
   const handleCheckboxChange = (event, itemId) => {
     console.log("Checkbox with ID", itemId, "was clicked");
+    localStorage.setItem('qrcodeId',itemId )
     onSelect(itemId);
   };
 
@@ -151,13 +152,16 @@ const MyQrCode = ({
 
   return (
     <section className="qr-border qr-rounded p-4 overflow-y-scroll">
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={handleSearchQueryChange}
-        className="border border-gray-300 rounded-md px-3 py-2 mb-4"
-      />
+     <div className="relative w-fit flex items-center">
+  <input
+    type="text"
+    placeholder="Search by Vehicle Name..."
+    value={searchQuery}
+    onChange={handleSearchQueryChange}
+    className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-64"
+  />
+  <MdSearch className="absolute right-3 top-[40%] text-2xl transform -translate-y-1/2 text-gray-400" />
+</div>
       <div className="flex flex-col gap-4">
         {filteredVehicleInfo.map((item, index) => (
           <div key={index} className="qr-card-container">
@@ -203,9 +207,10 @@ const MyQrCode = ({
                   <p> Sale Price: ${item.vehicle?.vehiclePrice}</p>
                   <p> Doc Fee: {item.vehicle?.docFee}</p>
                   <p>  {item.vehicle?.vehicleName}</p>
-                  <Link to={item.vehicle?.vehicleURL}>
-                    <p className="text-blue-600"> Vehicle URL</p>
-                  </Link>
+                  {item.vehicle?.vehicleURL && (
+  <a href={item.vehicle.vehicleURL.startsWith("http") ? item.vehicle.vehicleURL : `http://${item.vehicle.vehicleURL}`} target="_blank" rel="noopener noreferrer" className="text-blue-600">Vehicle URL</a>
+)}
+
                   <div className="flex mt-10">
                     <p className="font-normal relative left-20 -bottom-8">
                       Stock #: {item.vehicle?.stockNo}.
@@ -222,20 +227,21 @@ const MyQrCode = ({
         ))}
       </div>
       {editModal.open && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setEditModal({ open: false, id: null })}>&times;</span>
-            <h2>Edit QR Name</h2>
-            <input
-              type="text"
-              value={qrName}
-              onChange={handleQrNameChange}
-              placeholder="Enter new QR Name"
-              className="border border-gray-300 rounded-md px-3 py-2 mb-4"
-            />
-            <button onClick={handleEditQrName}>Update QR Name</button>
-          </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ">
+        <div className="modal-content bg-white w-80 rounded-md shadow-lg p-5">
+          <span className="close absolute top-2 right-2 cursor-pointer" onClick={() => setEditModal({ open: false, id: null })}>&times;</span>
+          <h2 className="text-xl font-bold mb-4">Edit QR Name</h2>
+          <input
+            type="text"
+            value={qrName}
+            onChange={handleQrNameChange}
+            placeholder="Enter new QR Name"
+            className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
+          />
+          <button onClick={handleEditQrName} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Update QR Name</button>
         </div>
+      </div>
+      
       )}
     </section>
   );

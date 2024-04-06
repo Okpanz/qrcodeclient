@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { MdDelete, MdEdit, MdFolder, MdClose } from 'react-icons/md';
 import { MdCreateNewFolder } from 'react-icons/md';
-import FolderModal from '../components/FolderModal.jsx';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FolderModal from '../components/FolderModal';
 
 const Folder = () => {
   const [folders, setFolders] = useState([]);
@@ -13,6 +13,9 @@ const Folder = () => {
   const [showModal1, setShowModal1] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [qrCodeData, setQRCodeData] = useState(null); // State variable to hold QR code data
+  const [qrCodeName, setQRCodeName] = useState(null); // State variable to hold QR code data
+  const [showEditModal, setShowEditModal] = useState(false); // State variable to control edit modal visibility
 
   useEffect(() => {
     fetchFolders();
@@ -36,6 +39,7 @@ const Folder = () => {
       .then((response) => {
         setFolders(response.data);
         setLoading(false);
+        // console.log;
       })
       .catch((error) => {
         console.error('Error fetching folder information:', error);
@@ -44,9 +48,27 @@ const Folder = () => {
       });
   };
   
-  const handleFolderClick = (folderId) => {
+  const handleFolderClick = async (folderId, folderName) => {
     setSelectedFolder(folderId);
     setShowModal(true);
+
+    try {
+      const token = JSON.parse(localStorage.getItem('user')).token;
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+
+      const response = await axios.get(`https://server-master-ullz.onrender.com/folder/${folderId}`, { 
+        headers,
+        params: { folderName } // Pass folder name as a parameter
+      });
+      setQRCodeData(response.data.qrCodes.map((item) => item.qrCodeImage  )); 
+      setQRCodeName(response.data.qrCodes.map((item) => item.qrName  )); 
+    } catch (error) {
+      console.error('Error fetching QR code data:', error);
+      toast.error('Failed to fetch QR code data');
+    }
   };
 
   const handleEditFolder = () => {
@@ -61,10 +83,11 @@ const Folder = () => {
       .put(`https://server-master-ullz.onrender.com/folder/update/${selectedFolder}`, { name: newFolderName }, { headers })
       .then((response) => {
         fetchFolders(); // Fetch folders again after updating
-        setShowModal(false);
+        // setShowModal(false);
         setNewFolderName(''); // Reset the new folder name state
         setLoading(false);
         toast.success('Folder updated successfully');
+        setShowEditModal(false)
       })
       .catch((error) => {
         console.error('Error updating folder:', error);
@@ -86,7 +109,9 @@ const Folder = () => {
       .then((response) => {
         fetchFolders(); // Fetch folders again after deletion
         setLoading(false);
+        
         toast.success('Folder deleted successfully');
+        // window.location.reload()
       })
       .catch((error) => {
         console.error('Error deleting folder:', error);
@@ -128,7 +153,7 @@ const Folder = () => {
                 {folders.map((folder) => (
                   <tr
                     key={folder._id}
-                    onClick={() => handleFolderClick(folder._id)}
+                    onClick={() => handleFolderClick(folder._id, folder.name)} // Pass folder name to handleFolderClick
                     className={
                       selectedFolder === folder._id
                         ? 'bg-gray-100 cursor-pointer'
@@ -146,7 +171,10 @@ const Folder = () => {
                       </div>
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap flex justify-center text-sm text-gray-500'>
-                      <button className='text-blue-600 hover:text-blue-900'>
+                      <button className='text-blue-600 hover:text-blue-900' onClick={(e) => {
+                        e.stopPropagation(); // Prevent folder click event from firing
+                        setShowEditModal(true); // Open the edit modal when edit icon is clicked
+                      }}>
                         <MdEdit />
                       </button>
                       <button className='text-red-600 hover:text-red-900 ml-2' onClick={() => handleDeleteFolder(folder._id)}>
@@ -164,9 +192,38 @@ const Folder = () => {
       {showModal1 && <FolderModal title='Create Folder' action='Create Folder' onClose={() => setShowModal1(false)} />}
 
       {showModal && selectedFolder && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black  bg-opacity-50 z-50 overflow-y-scroll'>
-          <div className='bg-white p-8 h-[60vh] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
-            <h2 className='font-bold text-lg mb-4'>Edit Folder</h2>
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
+          <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
+            <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
+            {qrCodeData && qrCodeData.image ? (
+  <div className='flex flex-col items-left '>
+    <p className='font-mono p-3'>QR Name: {qrCodeName}</p>
+    <img
+      src={qrCodeData.image}
+      alt={`QR Code for ${selectedFolder}`}
+      className="mx-auto"
+    />
+  </div>
+) : (
+  <p className='flex items-center justify-center text-red-600 italic'>No QR code available</p>
+)}
+
+
+
+            <button 
+              onClick={() => setShowModal(false)} 
+              className="absolute top-[22em] right-[25rem] text-white bg-red-500 p-3 rounded-md text-xl"
+            >
+              <MdClose />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showEditModal && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
+          <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
+            <h2 className='font-bold text-lg mb-4'>Edit Folder: {selectedFolder}</h2>
             <input
               type='text'
               placeholder='New Folder Name'
@@ -174,14 +231,18 @@ const Folder = () => {
               onChange={(e) => setNewFolderName(e.target.value)}
               className='w-full border border-gray-300 p-2 rounded-md mb-4'
             />
-            <button onClick={handleEditFolder} className='bg-blue-500 text-white px-4 py-2 rounded-md'>
-             {loading? 'Updating...' : 'Update Folder'}
+            <button 
+              onClick={handleEditFolder} 
+              className='bg-blue-500 text-white px-4 py-2 rounded-md'
+            >
+              {loading ? 'Updating...' : 'Update Folder'}
             </button>
             <button 
-              onClick={() => setShowModal(false)} 
-              className="absolute top-[26rem] left-[52rem] text-2xl m-5"
+              onClick={() => setShowEditModal(false)} 
+              className="absolute top-[22em] right-[25rem] text-white bg-red-500 p-3 rounded-md text-xl"
+
             >
-              <MdClose className="text-white bg-red-500 rounded-md 2"/>
+              <MdClose />
             </button>
           </div>
         </div>

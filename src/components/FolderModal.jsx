@@ -27,11 +27,12 @@ const FolderModal = ({ title, onClose }) => {
     };
 
     axios.post('https://server-master-ullz.onrender.com/folder/add-folder', folder, { headers })
-      .then(response => {
-        console.log('Folder created successfully:', response.data);
-        setLoading(false);
-        toast.success(response?.data?.message);
-      })
+    .then(response => {
+      toast.success(response?.data?.message);
+      console.log('Folder created successfully:', response.data);
+      setLoading(false);
+      window.location.reload()
+            })
       .catch(error => {
         setLoading(false);
         console.error('Error creating folder:', error);
