@@ -34,6 +34,7 @@ const FolderModal1 = ({ action, onClose }) => {
     try {
       setSelectedFolder(folderId);
       const selectedFolder = folders.find(folder => folder._id === folderId);
+      console.log(selectedFolder)
       const folderName = selectedFolder ? selectedFolder.name : "Unknown";
       localStorage.setItem('folderId', folderId);
       const token = JSON.parse(localStorage.getItem('user')).token;
@@ -53,7 +54,7 @@ const FolderModal1 = ({ action, onClose }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className=' inset-0 flex items-center justify-center '>Loading...</div>;
   }
 
   return (

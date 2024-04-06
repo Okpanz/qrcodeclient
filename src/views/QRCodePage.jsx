@@ -54,8 +54,9 @@ const QRCodePage = () => {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       };
-      await axios.delete(`https://server-master-ullz.onrender.com/vehicle/661039f5eb91a80443cdeb1a`);
+      await axios.delete(`https://server-master-ullz.onrender.com/vehicle/${qrCodeId}`);
       toast.success('QR code deleted successfully');
+      window.location.reload()
     } catch (error) {
       console.error('Error deleting QR code:', error);
       toast.error('Failed to delete QR code');
@@ -91,15 +92,13 @@ const QRCodePage = () => {
         <div className="w-[60vw] bg-white rounded-sm border border-gray-300 p-10 flex flex-col gap-6 overflow-hidden">
           <div className="flex  flex-row gap-8">
             <div className="px-5 py-4 gap-5 flex text-gray-400 items-center justify-between qr-border qr-rounded w-full">
-              <div className={"flex gap-2"}>
-                <input type="checkbox" value="Select" />
-                <h2>Select all</h2>
-              </div>
+              
               <MdOutlineContentCopy className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
               <MdDelete onClick={handleDeleteQRCode} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
               <BsFolderSymlink onClick={handleFolderIconClick} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
               <div className="text-gray-400 ml-auto">
-                <CiFilter  className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" onClick={() => handleFilterBy("alphabetical")} />
+              <BsFolderSymlink onClick={handleFolderIconClick} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
+
               </div>
             </div>
             {/* <input
