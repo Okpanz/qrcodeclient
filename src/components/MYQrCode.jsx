@@ -179,7 +179,7 @@ const MyQrCode = ({
                   <MdDownload />
                 </button>
                 <HiOutlinePencil
-                  onClick={() => handleEditButtonClick(item._id)} // Pass item._id to the handler
+                  onClick={() => handleEditButtonClick(item._id)} 
                   color="#a480ae"
                   size={20}
                   className="cursor-pointer hover:scale-1"
@@ -207,6 +207,9 @@ const MyQrCode = ({
                   <p> Sale Price: ${item.vehicle?.vehiclePrice}</p>
                   <p> Doc Fee: {item.vehicle?.docFee}</p>
                   <p>  {item.vehicle?.vehicleName}</p>
+                  {item.vehicle.DealerName&&
+                  <p> Dealer's Name: {item.vehicle?.DealerName}</p>
+                  }
                   {item.vehicle?.vehicleURL && (
   <a href={item.vehicle.vehicleURL.startsWith("http") ? item.vehicle.vehicleURL : `http://${item.vehicle.vehicleURL}`} target="_blank" rel="noopener noreferrer" className="text-blue-600">Vehicle URL</a>
 )}

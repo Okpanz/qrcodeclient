@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { IoQrCodeOutline } from 'react-icons/io5';
-import QRCode from 'qrcode.react'; // Import QRCode component
+import QRCode from 'qrcode.react'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -100,10 +100,11 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
         setMessage(response?.message);
         toast.success('Vehicle created successfully');
         onClose(true)
-        window.href="#"
+        window.location.reload();
       })
       .catch((error) => {
         setLoading(false);
+        toast.error('Check VIN make sure it is not used')
         console.error('Error creating vehicle:', error.response.data.error);
         toast.error('Failed: ' + error.response.data.error.toString());
 
@@ -118,7 +119,6 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
         <h2 className="font-bold text-lg mb-4">{title}</h2>
        
         
-       
         <div className="mb-4">
           <label htmlFor="vehicleURL" className="block text-sm font-medium text-gray-700">
             Vehicle URL
