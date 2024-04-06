@@ -16,6 +16,7 @@ const Folder = () => {
   const [qrCodeData, setQRCodeData] = useState(null); // State variable to hold QR code data
   const [qrCodeName, setQRCodeName] = useState(null); // State variable to hold QR code data
   const [showEditModal, setShowEditModal] = useState(false); // State variable to control edit modal visibility
+  const [vehicleInfo, setVehicleInfo] = useState(null); // State variable to hold vehicle information
 
   useEffect(() => {
     fetchFolders();
@@ -39,7 +40,6 @@ const Folder = () => {
       .then((response) => {
         setFolders(response.data);
         setLoading(false);
-        // console.log;
       })
       .catch((error) => {
         console.error('Error fetching folder information:', error);
@@ -63,15 +63,24 @@ const Folder = () => {
         headers,
         params: { folderName } // Pass folder name as a parameter
       });
-      setQRCodeData(response.data.qrCodes.map((item) => item.qrCodeImage  )); 
-      console.log(response.data.qrCodes.map((item) => item.qrCodeImage  ))
-      setQRCodeName(response.data.qrCodes.map((item) => item.qrName  )); 
+
+      if (response && response.data && response.data.qrCodes && Array.isArray(response.data.qrCodes)) {
+        const qrCodesArray = [...response.data.qrCodes];
+      
+        setQRCodeData(qrCodesArray.map((item) => item.vehicleInfo[0])); 
+        console.log(qrCodesArray.map((item) => item)); // Set qrCodeName state with qrNames
+        // setVehicleInfo(qrCodesArray.map((item) => item.vehicleInfo[1].map(item) => item.qrCodeImage)); // Set vehicleInfo state with vehicleInfo
+        setVehicleInfo(qrCodesArray.map((item) => item.vehicleInfo[1].qrCodeImage));
+
+      } else {
+        console.error("Response or QR codes array is undefined or not an array.");
+      }
+      
     } catch (error) {
       console.error('Error fetching QR code data:', error);
       toast.error('Failed to fetch QR code data');
     }
   };
-
   const handleEditFolder = () => {
     setLoading(true);
     const token = JSON.parse(localStorage.getItem('user')).token;
@@ -84,7 +93,6 @@ const Folder = () => {
       .put(`https://server-master-ullz.onrender.com/folder/update/${selectedFolder}`, { name: newFolderName }, { headers })
       .then((response) => {
         fetchFolders(); // Fetch folders again after updating
-        // setShowModal(false);
         setNewFolderName(''); // Reset the new folder name state
         setLoading(false);
         toast.success('Folder updated successfully');
@@ -192,32 +200,38 @@ const Folder = () => {
       {showModal1 && <FolderModal title='Create Folder' action='Create Folder' onClose={() => setShowModal1(false)} />}
 
       {showModal && selectedFolder && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
-          <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
-            <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
-            {qrCodeData && qrCodeData.map((data, index) => (
-  <div key={index} className='flex flex-col items-center'>
-    <p className='font-mono p-3'>QR Name: {qrCodeName[index]}</p>
-    <img
-      src={data}// Assuming the base64 data is for a PNG image, adjust if it's a different format
-      alt={`QR Code for ${selectedFolder}`}
-      className="mx-auto"
-    />
-  </div>
-))}
+  <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
+    <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
+      <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
+      <div className="grid grid-cols-2 gap-4">
+        {qrCodeData && qrCodeData.map((qrData, index) => (
+          <div key={index} className='border border-gray-200 p-4 rounded-md'>
+            <img
+  src={vehicleInfo[index]}
+  alt={`QR Code for ${vehicleInfo}`}
+  className="mx-auto mb-2"
+  style={{ maxWidth: "150px" }}
+/>
 
-
-
-
-            <button 
-              onClick={() => setShowModal(false)} 
-              className="absolute top-[22em] right-[25rem] text-white bg-red-500 p-3 rounded-md text-xl"
-            >
-              <MdClose />
-            </button>
+            <div className='flex flex-col items-start'>
+              <p className='mb-1'>Vehicle Name: {qrData?.vehicleName}</p>
+              <p className='mb-1'>VIN: {qrData?.VIN}</p>
+              <p className='mb-1'>Stock No: {qrData?.stockNo}</p>
+              <p className='mb-1'>Dealer Name: {qrData?.DealerName}</p>
+            </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
+      <button 
+        onClick={() => setShowModal(false)} 
+        className="absolute top-[22em] right-[25rem] text-white bg-red-500 p-3 rounded-md text-xl"
+      >
+        <MdClose />
+      </button>
+    </div>
+  </div>
+)}
+
 
       {showEditModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
@@ -239,7 +253,6 @@ const Folder = () => {
             <button 
               onClick={() => setShowEditModal(false)} 
               className="absolute top-[22em] right-[25rem] text-white bg-red-500 p-3 rounded-md text-xl"
-
             >
               <MdClose />
             </button>

@@ -237,13 +237,7 @@ const CreateQRCode = ({ onClose }) => {
           >
             {loading ? 'Creating' : 'Create'}
           </button>
-          <button
-            type="button"
-            onClick={handleClose}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          >
-            Close
-          </button>
+         
         </form>
         <div className="mt-4">
           <IoQrCodeOutline size={50} />
