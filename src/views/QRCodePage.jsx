@@ -101,14 +101,9 @@ const QRCodePage = () => {
 
               </div>
             </div>
-            {/* <input
-              onClick={handleChecked}
-              type={"search"}
-              placeholder={"search here"}
-              className={"qr-border outline-none ml-auto qr-rounded px-4"}
-            /> */}
+        
           </div>
-          {/* Pass handleQrCodeSelection, handleSortBy, and handleFilterBy to MyQrCode component */}
+          
           <MyQrCode onSelect={handleQrCodeSelection} onSort={handleSortBy} onFilter={handleFilterBy} qrCodeId={qrCodeId} />
         </div>
       </div>
