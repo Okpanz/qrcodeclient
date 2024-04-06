@@ -64,6 +64,7 @@ const Folder = () => {
         params: { folderName } // Pass folder name as a parameter
       });
       setQRCodeData(response.data.qrCodes.map((item) => item.qrCodeImage  )); 
+      console.log(response.data.qrCodes.map((item) => item.qrCodeImage  ))
       setQRCodeName(response.data.qrCodes.map((item) => item.qrName  )); 
     } catch (error) {
       console.error('Error fetching QR code data:', error);
@@ -109,9 +110,8 @@ const Folder = () => {
       .then((response) => {
         fetchFolders(); // Fetch folders again after deletion
         setLoading(false);
-        
         toast.success('Folder deleted successfully');
-        // window.location.reload()
+        window.location.reload()
       })
       .catch((error) => {
         console.error('Error deleting folder:', error);
@@ -195,18 +195,17 @@ const Folder = () => {
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
           <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
             <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
-            {qrCodeData && qrCodeData.image ? (
-  <div className='flex flex-col items-left '>
-    <p className='font-mono p-3'>QR Name: {qrCodeName}</p>
+            {qrCodeData && qrCodeData.map((data, index) => (
+  <div key={index} className='flex flex-col items-center'>
+    <p className='font-mono p-3'>QR Name: {qrCodeName[index]}</p>
     <img
-      src={qrCodeData.image}
+      src={data}// Assuming the base64 data is for a PNG image, adjust if it's a different format
       alt={`QR Code for ${selectedFolder}`}
       className="mx-auto"
     />
   </div>
-) : (
-  <p className='flex items-center justify-center text-red-600 italic'>No QR code available</p>
-)}
+))}
+
 
 
 
