@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { MdDelete, MdEdit, MdFolder, MdClose } from 'react-icons/md';
+import { MdDelete, MdEdit, MdFolder, MdClose, MdDownload } from 'react-icons/md';
 import { MdCreateNewFolder } from 'react-icons/md';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FolderModal from '../components/FolderModal';
+import { HiFolderRemove } from "react-icons/hi";
+import html2canvas from 'html2canvas';
 
 const Folder = () => {
   const [folders, setFolders] = useState([]);
@@ -13,10 +15,10 @@ const Folder = () => {
   const [showModal1, setShowModal1] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [qrCodeData, setQRCodeData] = useState(null); // State variable to hold QR code data
-  const [qrCodeName, setQRCodeName] = useState(null); // State variable to hold QR code data
-  const [showEditModal, setShowEditModal] = useState(false); // State variable to control edit modal visibility
-  const [vehicleInfo, setVehicleInfo] = useState(null); // State variable to hold vehicle information
+  const [qrCodeData, setQRCodeData] = useState(null);
+  const [qrCodeName, setQRCodeName] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [vehicleInfo, setVehicleInfo] = useState(null);
 
   useEffect(() => {
     fetchFolders();
@@ -48,8 +50,25 @@ const Folder = () => {
       });
   };
   
+  const downloadQRCode = (qrCodeId) => {
+    const qrCodeSection = document.getElementById(`qr-code-${qrCodeId}`);
+    const ignoredElements = qrCodeSection.querySelectorAll('.exclude-from-download'); // Select elements with the specified class
+    html2canvas(qrCodeSection, {
+      ignoreElements: (element) => {
+        return element.classList.contains('exclude-from-download'); // Exclude elements with the specified class
+      }
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'qrcode.png'; 
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  };
+  
   const handleFolderClick = async (folderId, folderName) => {
     setSelectedFolder(folderId);
+    console.log(selectedFolder)
+    localStorage.setItem('selectedFolder', selectedFolder)
     setShowModal(true);
 
     try {
@@ -61,15 +80,13 @@ const Folder = () => {
 
       const response = await axios.get(`https://server-master-ullz.onrender.com/folder/${folderId}`, { 
         headers,
-        params: { folderName } // Pass folder name as a parameter
+        params: { folderName } 
       });
 
       if (response && response.data && response.data.qrCodes && Array.isArray(response.data.qrCodes)) {
         const qrCodesArray = [...response.data.qrCodes];
       
         setQRCodeData(qrCodesArray.map((item) => item.vehicleInfo[0])); 
-        console.log(qrCodesArray.map((item) => item)); // Set qrCodeName state with qrNames
-        // setVehicleInfo(qrCodesArray.map((item) => item.vehicleInfo[1].map(item) => item.qrCodeImage)); // Set vehicleInfo state with vehicleInfo
         setVehicleInfo(qrCodesArray.map((item) => item.vehicleInfo[1].qrCodeImage));
 
       } else {
@@ -81,6 +98,7 @@ const Folder = () => {
       toast.error('Failed to fetch QR code data');
     }
   };
+
   const handleEditFolder = () => {
     setLoading(true);
     const token = JSON.parse(localStorage.getItem('user')).token;
@@ -92,8 +110,8 @@ const Folder = () => {
     axios
       .put(`https://server-master-ullz.onrender.com/folder/update/${selectedFolder}`, { name: newFolderName }, { headers })
       .then((response) => {
-        fetchFolders(); // Fetch folders again after updating
-        setNewFolderName(''); // Reset the new folder name state
+        fetchFolders(); 
+        setNewFolderName(''); 
         setLoading(false);
         toast.success('Folder updated successfully');
         setShowEditModal(false)
@@ -116,7 +134,7 @@ const Folder = () => {
     axios
       .delete(`https://server-master-ullz.onrender.com/folder/delete/${folderId}`, { headers })
       .then((response) => {
-        fetchFolders(); // Fetch folders again after deletion
+        fetchFolders(); 
         setLoading(false);
         toast.success('Folder deleted successfully');
         window.location.reload()
@@ -131,6 +149,29 @@ const Folder = () => {
   const handleCreateFolder = () => {
     setShowModal1(true);
   };
+
+  const handleRemoveQRFromFolder = ( qrcodeId) => {
+    const folderId = localStorage.getItem('selectedFolder')
+    setLoading(true);
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    };
+    axios
+        .delete(`https://server-master-ullz.onrender.com/vehicle/folders/${folderId}/qrcodes/${qrcodeId}`, { headers })
+        .then((response) => {
+            fetchFolders(); // Fetch folders again after removing QR code
+            setLoading(false);
+            toast.success('QR code removed from folder successfully');
+        })
+        .catch((error) => {
+            console.error('Error removing QR code from folder:', error);
+            setLoading(false);
+            toast.error('Failed to remove QR code from folder');
+        });
+};
+
 
   return (
     <div className='h-screen bg-slate-300 flex flex-col gap-2 justify-center items-center w-screen ' >
@@ -161,7 +202,7 @@ const Folder = () => {
                 {folders.map((folder) => (
                   <tr
                     key={folder._id}
-                    onClick={() => handleFolderClick(folder._id, folder.name)} // Pass folder name to handleFolderClick
+                    onClick={() => handleFolderClick(folder._id, folder.name)} 
                     className={
                       selectedFolder === folder._id
                         ? 'bg-gray-100 cursor-pointer'
@@ -180,12 +221,12 @@ const Folder = () => {
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap flex justify-center text-sm text-gray-500'>
                       <button className='text-blue-600 hover:text-blue-900' onClick={(e) => {
-                        e.stopPropagation(); // Prevent folder click event from firing
-                        setShowEditModal(true); // Open the edit modal when edit icon is clicked
+                        e.stopPropagation(); 
+                        setShowEditModal(true); 
                       }}>
                         <MdEdit />
                       </button>
-                      <button className='text-red-600 hover:text-red-900 ml-2' onClick={() => handleDeleteFolder(folder._id)}>
+                      <button className='text-red-600 hover:text-red-900 ml-2' onClick={() => handleDeleteFolder(selectedFolder, folder._id)}>
                         <MdDelete />
                       </button>
                     </td>
@@ -203,21 +244,36 @@ const Folder = () => {
   <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
     <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
       <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         {qrCodeData && qrCodeData.map((qrData, index) => (
-          <div key={index} className='border border-gray-200 p-4 rounded-md'>
+          <div key={index} className='border w-full border-gray-200 p-4 bg-slate-200 hover:bg-slate-300 cursor-pointer rounded-md flex justify-between'  id={`qr-code-${qrData._id}`}>
             <img
   src={vehicleInfo[index]}
   alt={`QR Code for ${vehicleInfo}`}
-  className="mx-auto mb-2"
+  className="m mb-2"
   style={{ maxWidth: "150px" }}
 />
 
             <div className='flex flex-col items-start'>
-              <p className='mb-1'>Vehicle Name: {qrData?.vehicleName}</p>
-              <p className='mb-1'>VIN: {qrData?.VIN}</p>
-              <p className='mb-1'>Stock No: {qrData?.stockNo}</p>
-              <p className='mb-1'>Dealer Name: {qrData?.DealerName}</p>
+              <p className='mb-1'><span className='font-bold '>Vehicle Name:</span> {qrData?.vehicleName}</p>
+              <p className='mb-1'><span className='font-bold '>VIN:</span> {qrData?.VIN}</p>
+              <p className='mb-1'><span className='font-bold '>Stock No:</span> {qrData?.stockNo}</p>
+              <p className='mb-1'><span className='font-bold '>Dealer Name:</span> {qrData?.DealerName}</p>
+              <p className='mb-1'><span className='font-bold '>Doc Fee:</span> {qrData?.docFee}</p>
+            </div>
+            
+            <div>
+            </div>
+            <div>
+              <h1 className='font-bold uppercase'>
+              Action
+              </h1>
+              <div className='flex justify-center'>
+            <button className='cursor-pointer exclude-from-download hover:text-red-500' onClick={() => downloadQRCode(qrData._id)}><MdDownload /></button>
+                {/* <p className='cursor-pointer hover:text-red-500 flex items-center ' onClick={() => handleRemoveQRFromFolder(qrData._id)}>
+                  <span className='text-sm'>Remove from folder</span> <HiFolderRemove />
+                </p> */}
+              </div>
             </div>
           </div>
         ))}
@@ -231,7 +287,6 @@ const Folder = () => {
     </div>
   </div>
 )}
-
 
       {showEditModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>

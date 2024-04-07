@@ -69,6 +69,7 @@ const FolderModal1 = ({ action, onClose }) => {
             </li>
           ))}
         </ul>
+        <button className='p-3 bg-red-600 rounded-md text-white' onClick={onClose}>Close</button>
       </div>
     </div>
   );
