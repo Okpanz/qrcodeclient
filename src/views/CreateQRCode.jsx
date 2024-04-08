@@ -29,9 +29,9 @@ const colorMap = {
   teal: 'teal',
 };
 
-const CreateQRCode = ({ onClose }) => {
+const CreateQRCode = () => {
   const [qrData, setQrData] = useState({
-    url: '',
+    vehicleURL: '',
     foregroundColor: '',
     backgroundColor: 'white',
     DealerName: '',
@@ -42,6 +42,23 @@ const CreateQRCode = ({ onClose }) => {
     docFee: '',
     imageFile: null,
   });
+
+
+  const resetQrData = () => {
+    setQrData({
+      vehicleURL: '',
+      foregroundColor: '',
+      backgroundColor: 'white',
+      DealerName: '',
+      vehiclePrice: '',
+      VIN: '',
+      stockNo: '',
+      vehicleName: '',
+      docFee: '',
+      imageFile: null,
+    });
+  };
+  
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -82,8 +99,8 @@ const CreateQRCode = ({ onClose }) => {
       };
       const response = await axios.post('https://server-master-ullz.onrender.com/vehicle/generate', formData,{headers});
 
-      toast.success(response.data.message);
-      onClose();
+      toast.success("QR Code Generated Successfully");
+      resetQrData()
     } catch (error) {
       console.error('Error creating QR code:', error);
       toast.error('Failed to create QR code');
@@ -92,9 +109,7 @@ const CreateQRCode = ({ onClose }) => {
     setLoading(false);
   };
   
-  const handleClose = () => {
-    onClose(); // Invoke the onClose function passed from the parent component
-  };
+ 
 
   return (
     <>
@@ -102,19 +117,19 @@ const CreateQRCode = ({ onClose }) => {
         <h2 className="font-bold text-lg mb-4">Create QR Code</h2>
         <form className="space-y-4">
           <div>
-            <label htmlFor="url" className="block text-sm font-medium text-gray-700">URL</label>
+            <label htmlFor="vehicleURL" className="block text-sm font-medium text-gray-700">URL</label>
             <input
               type="text"
-              id="url"
-              name="url"
-              value={qrData.url}
+              id="vehicleURL"
+              name="vehicleURL"
+              value={qrData.vehicleURL}
               onChange={handleChange}
               className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter URL"
             />
           </div>
           <div>
-            <label htmlFor="foregroundColor" className="block text-sm font-medium text-gray-700">Foreground Color</label>
+            <label htmlFor="foregroundColor" className="block text-sm font-medium text-gray-700"> Color</label>
             <select
               id="foregroundColor"
               name="foregroundColor"
@@ -130,22 +145,7 @@ const CreateQRCode = ({ onClose }) => {
               ))}
             </select>
           </div>
-          <div>
-            <label htmlFor="backgroundColor" className="block text-sm font-medium text-gray-700">Background Color</label>
-            <select
-              id="backgroundColor"
-              name="backgroundColor"
-              value={qrData.backgroundColor}
-              onChange={handleChange}
-              className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            >
-              {Object.keys(colorMap).map((color) => (
-                <option key={color} value={color}>
-                  {color}
-                </option>
-              ))}
-            </select>
-          </div>
+         
           <div>
             <label htmlFor="DealerName" className="block text-sm font-medium text-gray-700">Dealer Name</label>
             <input

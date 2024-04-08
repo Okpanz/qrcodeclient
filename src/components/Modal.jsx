@@ -91,7 +91,7 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
       formData.append(key, vehicleDetails[key]);
     }
   
-    axiosPost(`https://server-master-ullz.onrender.com/vehicle/${endpoint}`, formData, {
+    axiosPost(`https://server-master-ullz.onrender.com/${endpoint}`, formData, {
       headers: headers,
     })
       .then((response) => {
@@ -99,8 +99,8 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
         setLoading(false);
         setMessage(response?.message);
         toast.success('Vehicle created successfully');
-        onClose(true)
-        window.location.reload();
+        // onClose(true)
+        // window.location.reload();
       })
       .catch((error) => {
         setLoading(false);

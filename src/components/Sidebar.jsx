@@ -64,7 +64,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`flex flex-col w-64 sm:w-20 bg-white h-screen text-gray-500 fixed `}
+      className={`flex flex-col md:w-64 w-14 bg-white h-screen text-gray-500 fixed `}
     >
       <div className="lg:hidden">
         <button

@@ -174,9 +174,9 @@ const Folder = () => {
 
 
   return (
-    <div className='h-screen bg-slate-300 flex flex-col gap-2 justify-center items-center w-screen ' >
+    <div className='h-screen bg-slate-300 flex w-[30vw]  md:flex-col gap-2 justify-center items-center md:w-screen ' >
       <ToastContainer />
-      {loading && <div className="fixed top-0 left-0 right-0 bottom-0 w-[90%] text-white bg-black flex justify-center items-center opacity-50 z-50">Loading....</div>}
+      {loading && <div className="fixed top-0 left-0 right-0 bottom-0 w-[100%] text-white bg-black flex justify-center items-center opacity-50 z-50">Loading....</div>}
       <button
         onClick={handleCreateFolder}
         className='absolute right-0 top-0 m-10 p-3 rounded-sm bg-blue-300 flex items-center gap-2 text-blue-800'
@@ -241,12 +241,12 @@ const Folder = () => {
       {showModal1 && <FolderModal title='Create Folder' action='Create Folder' onClose={() => setShowModal1(false)} />}
 
       {showModal && selectedFolder && (
-  <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
+  <div className='fixed inset-0 flex flex-row md:flex-col items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
     <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
       <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
       <div className="grid grid-cols-1 gap-4">
         {qrCodeData && qrCodeData.map((qrData, index) => (
-          <div key={index} className='border w-full border-gray-200 p-4 bg-slate-200 hover:bg-slate-300 cursor-pointer rounded-md flex justify-between'  id={`qr-code-${qrData._id}`}>
+          <div key={index} className='border w-full border-gray-200 p-4 bg-slate-200 hover:bg-slate-300 cursor-pointer rounded-md flex md:flex-row flex-col justify-between'  id={`qr-code-${qrData._id}`}>
             <img
   src={vehicleInfo[index]}
   alt={`QR Code for ${vehicleInfo}`}
@@ -265,11 +265,12 @@ const Folder = () => {
             <div>
             </div>
             <div>
-              <h1 className='font-bold uppercase'>
+              <h1 className='font-bold uppercase exclude-from-download'>
               Action
               </h1>
-              <div className='flex justify-center'>
-            <button className='cursor-pointer exclude-from-download hover:text-red-500' onClick={() => downloadQRCode(qrData._id)}><MdDownload /></button>
+              <div className='flex md:justify-center'>
+            <button className='cursor-pointer hidden md:block exclude-from-download hover:text-red-500' onClick={() => downloadQRCode(qrData._id)}><MdDownload /></button>
+            <button className='cursor-pointer  bg-green-600 text-white p-2 rounded-md md:hidden exclude-from-download hover:text-red-500' onClick={() => downloadQRCode(qrData._id)}>Download</button>
                 {/* <p className='cursor-pointer hover:text-red-500 flex items-center ' onClick={() => handleRemoveQRFromFolder(qrData._id)}>
                   <span className='text-sm'>Remove from folder</span> <HiFolderRemove />
                 </p> */}
@@ -280,7 +281,7 @@ const Folder = () => {
       </div>
       <button 
         onClick={() => setShowModal(false)} 
-        className="absolute top-[22em] right-[25rem] text-white bg-red-500 p-3 rounded-md text-xl"
+        className="absolute top-[22em] md:right-[25rem] right-[9rem] text-white bg-red-500 md:p-3  p-2 rounded-md text-xl"
       >
         <MdClose />
       </button>
