@@ -9,6 +9,7 @@ import {  ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MyQrCode from './../components/MYQrCode';
 
+
 const QRCodePage = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -98,6 +99,7 @@ const QRCodePage = () => {
               <BsFolderSymlink onClick={handleFolderIconClick} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
               <div className="text-gray-400 ml-auto">
               <BsFolderSymlink onClick={handleFolderIconClick} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
+              
 
               </div>
             </div>
@@ -108,7 +110,7 @@ const QRCodePage = () => {
         </div>
       </div>
 
-      {showCreateModal && <Modal endpoint="generate" axiosPost={axios.post} title='Upload Vehicle information' onClose={() => setShowCreateModal(false)} />}
+      {showCreateModal && <Modal endpoint="vehicle/generate" axiosPost={axios.post} title='Upload Vehicle information' onClose={() => setShowCreateModal(false)} />}
       {showFolderModal && <FolderModal1 onClose={() => setShowFolderModal(false)} />}
       <ToastContainer />
     </div>
