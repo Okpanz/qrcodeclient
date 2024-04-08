@@ -14,7 +14,7 @@ const DownloadFormatModal = ({ onClose, onSelectFormat }) => {
           <button onClick={() => handleFormatSelect("PNG")} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">PNG</button>
           <button onClick={() => handleFormatSelect("JPEG")} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">JPEG</button>
         </div>
-        <button onClick={onClose} className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mt-4">Cancel</button>
+        <button onClick={onClose} className="bg-gray-300 text-red-700 px-4 py-2 rounded-md mt-4">Cancel</button>
       </div>
     </div>
   );

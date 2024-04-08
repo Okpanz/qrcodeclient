@@ -278,13 +278,13 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
         </div>
         <div className="flex justify-between">
           <button
-            className={`mt-4 ${loading ? 'bg-gray-500' : 'bg-green-500'} text-white px-4 py-2 rounded-md hover:bg-green-600`}
+            className={`mt-4 ${loading ? 'bg-blue-800' : 'bg-blue-800'} text-white px-4 py-2 rounded-md hover:bg-blue-600`}
             onClick={update}
             disabled={loading}
           >
             {loading ? 'Creating' : 'Create'}
           </button>
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={onClose}>
+          <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600" onClick={onClose}>
             Close
           </button>
         </div>
