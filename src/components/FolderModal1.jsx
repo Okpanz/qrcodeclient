@@ -63,7 +63,7 @@ const FolderModal1 = ({ action, onClose }) => {
         <h2 className="font-bold text-lg mb-4">Folders</h2>
         <ul>
           {folders.map(folder => (
-            <li key={folder._id} className="flex items-center text-gray-400 cursor-pointer" onClick={() => handleFolderClick(folder._id)}>
+            <li key={folder._id} className="flex items-center text-blue-800 cursor-pointer" onClick={() => handleFolderClick(folder._id)}>
               <MdFolder />
               {folder.name}
             </li>
