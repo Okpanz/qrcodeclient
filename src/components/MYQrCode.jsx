@@ -11,7 +11,7 @@ import ReactToPrint from "react-to-print";
 import UpdateModal from "./UpdateModal";
 import { toast } from "react-toastify";
 
-const MyQrCode = ({filteredVehicleInfo}) => {
+const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   const [vehicleInfo, setVehicleInfo] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState(null);
@@ -23,10 +23,10 @@ const MyQrCode = ({filteredVehicleInfo}) => {
   const [selectedFormat, setSelectedFormat] = useState(null); 
   const [showCreateModal, setShowCreateModal] = useState({ open: false, id: null });
   const [editModal, setEditModal] = useState({ open: false, id: null });
+  const [searchedVehicleInfo, setSearchedVehicleInfo] = useState([]);
   const componentRef = useRef();
 
   useEffect(() => {
-    // fetchVehicleInfo();
     console.log(filteredVehicleInfo);
   }, []);
 
@@ -135,10 +135,6 @@ const MyQrCode = ({filteredVehicleInfo}) => {
     setShowFormatModal(true); 
   };
 
-  // Function to handle changing the search query
-  const handleSearchQueryChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
 
   // Function to handle changing the QR name
   const handleQrNameChange = (event) => {
@@ -201,6 +197,7 @@ const MyQrCode = ({filteredVehicleInfo}) => {
       console.log('QR Name updated successfully:', response.data);
       setEditModal({ open: false, id: null });
       fetchVehicleInfo();
+      window.location.reload()
     })
     .catch(error => {
       console.error('Error updating QR Name:', error);
@@ -215,18 +212,19 @@ const MyQrCode = ({filteredVehicleInfo}) => {
   };
 
   function renderCurrency(number) {
-    const formattedNumber = number.toLocaleString('en-US');
+    const formattedNumber = number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     return formattedNumber;
   }
-
   
+
+ 
   return (
     <section className="qr-border qr-rounded p-4 overflow-y-scroll">
      <div className=" w-fit flex items-center">
       <input
         type="text"
         placeholder="Search by Vehicle Name..."
-        value={searchQuery}
+        // value={searchQuery}
         onChange={handleSearchQueryChange}
         className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-64"
       />
@@ -286,8 +284,13 @@ const MyQrCode = ({filteredVehicleInfo}) => {
       </div>
     </div>
     <div className="text-center font-bold ml-auto">
-      <p>Sale Price: ${renderCurrency(parseInt(item.vehicle?.vehiclePrice))}</p>
-      <p>Doc Fee: $ {renderCurrency(item.vehicle?.docFee)}</p>
+    {!isNaN(parseInt(item.vehicle?.vehiclePrice)) && (
+  <p>Sale Price: {renderCurrency(parseInt(item.vehicle?.vehiclePrice))}</p>
+)}
+{!isNaN(parseInt(item.vehicle?.docFee)) && (
+  <p>Doc Fee: {renderCurrency(parseInt(item.vehicle?.docFee))}</p>
+)}
+
       <p>Vehicle Name: {item.vehicle?.vehicleName}</p>
       {item.vehicle.DealerName && (
         <p>Dealer's Name: {item.vehicle?.DealerName}</p>

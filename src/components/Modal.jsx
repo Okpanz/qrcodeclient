@@ -99,8 +99,8 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
         setLoading(false);
         setMessage(response?.message);
         toast.success('Vehicle created successfully');
-        // onClose(true)
-        // window.location.reload();
+        onClose(true)
+        window.location.reload();
       })
       .catch((error) => {
         setLoading(false);
