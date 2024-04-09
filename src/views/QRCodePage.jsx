@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MdDelete, MdOutlineContentCopy, MdCreateNewFolder, MdFolder } from "react-icons/md";
+import { MdDelete, MdOutlineContentCopy, MdCreateNewFolder, MdFolder, MdFilterAlt } from "react-icons/md";
 import { BsFolderSymlink } from "react-icons/bs";
 import { CiFilter } from "react-icons/ci";
 import Modal from "../components/Modal.jsx";
@@ -9,19 +9,31 @@ import {  ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MyQrCode from './../components/MYQrCode';
 
-
 const QRCodePage = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [folders, setFolders] = useState([]);
-  const [qrCodeId, setQrCodeId] = useState(null); // State to store the selected QR code ID
-  const [sortBy, setSortBy] = useState(null); // State to store the selected sorting criteria
-  const [filterBy, setFilterBy] = useState(null); // State to store the selected filtering criteria
+  const [qrCodeId, setQrCodeId] = useState(null);
+  const [dropDown, setDropDown] = useState(true)
 
   useEffect(() => {
-    fetchFolders(); // Fetch folders on component mount
+    fetchFolders();
   }, []);
+
+
+  const fetchVehicleInfo = () => {
+    // Fetch vehicle information from API
+    axios.get('https://server-master-ullz.onrender.com/vehicle')
+      .then(response => {
+        // Set vehicle information in state
+        setVehicleInfo(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching vehicle information:', error);
+      });
+  };
+
 
   const fetchFolders = async () => {
     try {
@@ -32,8 +44,6 @@ const QRCodePage = () => {
       };
       const response = await axios.get('https://server-master-ullz.onrender.com/folder', { headers });
       setFolders(response.data);
-      toast.success('Folder data fetched successfully');
-      // If there are folders fetched and qrCodeId is null, set qrCodeId to the first item's ID
       if (response.data.length > 0 && !qrCodeId) {
         setQrCodeId(response.data[0]._id);
       }
@@ -63,7 +73,9 @@ const QRCodePage = () => {
       toast.error('Failed to delete QR code');
     }
   };
-
+  const handleToggle = () => {
+    setDropDown(prevState => !prevState)
+  }
   const handleChecked = (event) => {
     setSelectAll(event.target.checked);
     localStorage.setItem('qrid', event.target.checked);
@@ -73,15 +85,6 @@ const QRCodePage = () => {
     setQrCodeId(id);
   };
 
-  // Function to handle sorting
-  const handleSortBy = (criteria) => {
-    setSortBy(criteria);
-  };
-
-  // Function to handle filtering
-  const handleFilterBy = (criteria) => {
-    setFilterBy(criteria);
-  };
 
   return (
     <div className="h-screen bg-slate-300 w-screen flex flex-col gap-2 justify-center items-center">
@@ -97,20 +100,27 @@ const QRCodePage = () => {
               <MdOutlineContentCopy className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
               <MdDelete onClick={handleDeleteQRCode} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
               <BsFolderSymlink onClick={handleFolderIconClick} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
-              <div className="text-gray-400 ml-auto">
-              <BsFolderSymlink onClick={handleFolderIconClick} className="hover:text-black cursor-pointer transition-all ease-in-out duration-200" />
-              
-
+              <div className="text-gray-400 ml-auto flex flex-col items-center relative right-10">
+              <MdFilterAlt onClick={() => handleToggle()} className={dropDown ? 'text-blue-700 hover:text-black cursor-pointer transition-all ease-in-out duration-200 ' : 'transition-all ease-in-out duration-300 cursor-pointer'}
+ />
+                 {dropDown &&
+                  <div className={dropDown ?'absolute top-6 bg-white border border-gray-600 w-36 text-black transition-all ease-in-out duration-300 p-1': 'transition-all ease-in-out duration-300'}>
+                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" >sort by Dealer Name</p>
+                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500">sort by Date Created</p>
+                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500">sort by Date Modified</p>
+                  </div> 
+                  }
               </div>
             </div>
         
           </div>
           
-          <MyQrCode onSelect={handleQrCodeSelection} onSort={handleSortBy} onFilter={handleFilterBy} qrCodeId={qrCodeId} />
+          <MyQrCode onSelect={handleQrCodeSelection}  qrCodeId={qrCodeId} 
+          />
         </div>
       </div>
 
-      {showCreateModal && <Modal endpoint="vehicle/generate" axiosPost={axios.post} title='Upload Vehicle information' onClose={() => setShowCreateModal(false)} />}
+      {showCreateModal && <Modal endpoint="generate" axiosPost={axios.post} title='Upload Vehicle information' onClose={() => setShowCreateModal(false)} />}
       {showFolderModal && <FolderModal1 onClose={() => setShowFolderModal(false)} />}
       <ToastContainer />
     </div>
