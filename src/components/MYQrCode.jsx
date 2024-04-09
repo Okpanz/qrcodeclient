@@ -8,6 +8,7 @@ import domToImage from 'dom-to-image-more';
 import { HiOutlinePencil } from "react-icons/hi";
 import html2canvas from "html2canvas";
 import ReactToPrint from "react-to-print";
+import UpdateModal from "./UpdateModal";
 
 const MyQrCode = ({filteredVehicleInfo}) => {
   const [vehicleInfo, setVehicleInfo] = useState([]);
@@ -282,7 +283,7 @@ const MyQrCode = ({filteredVehicleInfo}) => {
     <div className="text-center font-bold ml-auto">
       <p>Sale Price: ${item.vehicle?.vehiclePrice}</p>
       <p>Doc Fee: ${item.vehicle?.docFee}</p>
-      <p>{item.vehicle?.vehicleName}</p>
+      <p>Vehicle Name: {item.vehicle?.vehicleName}</p>
       {item.vehicle.DealerName && (
         <p>Dealer's Name: {item.vehicle?.DealerName}</p>
       )}
@@ -317,7 +318,7 @@ const MyQrCode = ({filteredVehicleInfo}) => {
         ))}
       </div>
       {showCreateModal.open && (
-  <Modal
+  <UpdateModal
     onClose={() => setShowCreateModal(false)}
     endpoint={`vehicle/${showCreateModal.id}`}
     axiosPost={axios.patch}

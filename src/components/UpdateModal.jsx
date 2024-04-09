@@ -31,88 +31,69 @@ const colorMap = {
   teal: 'teal',
 };
 
-const UpdateModal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
-  const [vehicleDetails, setVehicleDetails] = useState({
-    vehicleURL: '',
-    vehiclePrice: '',
-    VIN: '',
-    stockNo: '',
-    vehicleName: '',
-    docFee: '',
-    foregroundColor: '',
-    backgroundColor: 'white',
-    DealerName: '',
-    qrName: '',
-    imageFile: null,
-  });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setVehicleDetails({
-      ...vehicleDetails,
-      [name]: value,
+const UpdateModal = ({ title, onClose, endpoint, axiosPost, qrCodeId }) => {
+    const [vehicleDetails, setVehicleDetails] = useState({
+      vehicleURL: '',
+      vehiclePrice: '',
+      VIN: '',
+      stockNo: '',
+      vehicleName: '',
+      docFee: '',
+      foregroundColor: '',
+      backgroundColor: 'white',
+      DealerName: '',
+      qrName: '',
+      imageFile: null,
     });
-  };
-
-  const handleImageChange = (e) => {
-    setVehicleDetails({
-      ...vehicleDetails,
-      imageFile: e.target.files[0],
-    });
-  };
-
-  const handleColorChange = (e) => {
-    const { name, value } = e.target;
-    setVehicleDetails({
-      ...vehicleDetails,
-      [name]: colorMap[value],
-    });
-  };
-
-  const update = () => {
-    setLoading(true);
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user || !user.token) {
-      console.error('User token not found');
-      setLoading(false);
-      return;
-    }
+    const [loading, setLoading] = useState(false);
   
-    const token = user.token;
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'multipart/form-data',
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setVehicleDetails({
+        ...vehicleDetails,
+        [name]: value,
+      });
     };
   
-    const formData = new FormData();
-    for (const key in vehicleDetails) {
-      formData.append(key, vehicleDetails[key]);
-    }
-  
-    axiosPost(`https://server-master-ullz.onrender.com/${endpoint}`, formData, {
-      headers: headers,
-    })
-      .then((response) => {
-        console.log('Vehicle created successfully:', response.data);
-        setLoading(false);
-        setMessage(response?.message);
-        toast.success('Vehicle created successfully');
-        // onClose(true)
-        // window.location.reload();
-      })
-      .catch((error) => {
-        setLoading(false);
-        toast.error('Check VIN make sure it is not used')
-        console.error('Error creating vehicle:', error.response.data.error);
-        toast.error('Failed: ' + error.response.data.error.toString());
-
-        setMessage(error);
+    const handleImageChange = (e) => {
+      setVehicleDetails({
+        ...vehicleDetails,
+        imageFile: e.target.files[0],
       });
-  };
+    };
   
-
+    const handleColorChange = (e) => {
+      const { name, value } = e.target;
+      setVehicleDetails({
+        ...vehicleDetails,
+        [name]: colorMap[value],
+      });
+    };
+  
+    const update = async () => {
+      setLoading(true);
+      try {
+        const formData = new FormData();
+        for (const key in vehicleDetails) {
+          formData.append(key, vehicleDetails[key]);
+        }
+  
+        const response = await axiosPost(`https://server-master-ullz.onrender.com/${endpoint}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+        });
+  
+        console.log('Vehicle updated successfully:', response.data);
+        setLoading(false);
+        toast.success('Vehicle updated successfully');
+        onClose(true); 
+      } catch (error) {
+        setLoading(false);
+        console.error('Error updating vehicle:', error);
+        toast.error('Failed to update vehicle');
+      }
+    };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll ">
       <div className="bg-white p-8 rounded-md shadow-lg w-[50vw] h-[70vh] overflow-y-scroll transition-opacity duration-300">
@@ -186,7 +167,7 @@ const UpdateModal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
             value={vehicleDetails.DealerName}
             onChange={handleChange}
             className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter stock number"
+            placeholder="Enter Dealer Name"
           />
         </div>
         <div className="mb-4">

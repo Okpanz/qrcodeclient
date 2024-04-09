@@ -186,7 +186,7 @@ const Modal = ({ title, onClose, endpoint, axiosPost,qrCodeId }) => {
             value={vehicleDetails.DealerName}
             onChange={handleChange}
             className="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter stock number"
+            placeholder="Enter Dealer Name"
           />
         </div>
         <div className="mb-4">
