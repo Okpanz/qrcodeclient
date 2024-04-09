@@ -20,7 +20,7 @@ const QRCodePage = () => {
   const [dropDown, setDropDown] = useState(false)
   const [vehicleInfo, setVehicleInfo] = useState([]);
   const [sortBy, setSortBy] = useState(null);
-
+  const [activeSort, setActiveSort] = useState(null);
   useEffect(() => {
     fetchFolders();
     fetchVehicleInfo()
@@ -90,6 +90,7 @@ const QRCodePage = () => {
     }
     setVehicleInfo(sortedInfo);
     setSortBy(criterion);
+    setActiveSort(criterion);
   };
 
   const handleSortByDateCreated = () => {
@@ -165,9 +166,9 @@ const QRCodePage = () => {
  />
                  {dropDown &&
                   <div className={dropDown ?'absolute top-6 bg-white border border-gray-600 w-36 text-black transition-all ease-in-out duration-300 p-1': 'transition-all ease-in-out duration-300'}>
-                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" onClick={() => handleSortByDealerName()}>sort by Dealer Name</p>
-                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" onClick={handleSortByDateCreated}>sort by Date Created</p>
-                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" onClick={handleSortByDateModified}>sort by Date Modified</p>
+                   <p className={`text-xs cursor-pointer ${activeSort === 'dealerName' ? 'font-bold' : ''}`} onClick={() => handleSortByDealerName()}>sort by Dealer Name</p>
+                    <p className={`text-xs cursor-pointer ${activeSort === 'dateCreated' ? 'font-bold' : ''}`} onClick={handleSortByDateCreated}>sort by Date Created</p>
+                    <p className={`text-xs cursor-pointer ${activeSort === 'dateModified' ? 'font-bold' : ''}`} onClick={handleSortByDateModified}>sort by Date Modified</p>
                   </div> 
                   }
               </div>

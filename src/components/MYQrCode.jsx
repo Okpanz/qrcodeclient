@@ -9,6 +9,7 @@ import { HiOutlinePencil } from "react-icons/hi";
 import html2canvas from "html2canvas";
 import ReactToPrint from "react-to-print";
 import UpdateModal from "./UpdateModal";
+import { toast } from "react-toastify";
 
 const MyQrCode = ({filteredVehicleInfo}) => {
   const [vehicleInfo, setVehicleInfo] = useState([]);
@@ -162,12 +163,14 @@ const MyQrCode = ({filteredVehicleInfo}) => {
       headers: headers
     })
     .then(response => {
+      fetchVehicleInfo();
+      toast.success('Deleted successfully')
       console.log('Item deleted successfully:', response.data);
       setSelectedItemId(null);
       setDeleting(false); 
-      fetchVehicleInfo();
     })
     .catch(error => {
+      toast.error('Error Deleting files')
       console.error('Error deleting item:', error);
     });
   };
@@ -204,15 +207,17 @@ const MyQrCode = ({filteredVehicleInfo}) => {
     });
   };
 
-  // Filtered vehicle information based on search query
-  // const filteredVehicleInfo = vehicleInfo.filter((item) =>
-  //   item.vehicle?.vehicleName.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+  
   const printQRCode = () => {
     if (selectedItemId) {
       window.print();
     }
   };
+
+  function renderCurrency(number) {
+    const formattedNumber = number.toLocaleString('en-US');
+    return formattedNumber;
+  }
 
   
   return (
@@ -281,8 +286,8 @@ const MyQrCode = ({filteredVehicleInfo}) => {
       </div>
     </div>
     <div className="text-center font-bold ml-auto">
-      <p>Sale Price: ${item.vehicle?.vehiclePrice}</p>
-      <p>Doc Fee: ${item.vehicle?.docFee}</p>
+      <p>Sale Price: ${renderCurrency(parseInt(item.vehicle?.vehiclePrice))}</p>
+      <p>Doc Fee: $ {renderCurrency(item.vehicle?.docFee)}</p>
       <p>Vehicle Name: {item.vehicle?.vehicleName}</p>
       {item.vehicle.DealerName && (
         <p>Dealer's Name: {item.vehicle?.DealerName}</p>
