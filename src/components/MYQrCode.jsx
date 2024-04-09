@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import { MdDelete, MdDownload, MdOutlineQrCodeScanner, MdSearch, MdPrint } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -7,8 +7,9 @@ import DownloadFormatModal from "./DownloadFormatModal";
 import domToImage from 'dom-to-image-more';
 import { HiOutlinePencil } from "react-icons/hi";
 import html2canvas from "html2canvas";
+import ReactToPrint from "react-to-print";
 
-const MyQrCode = () => {
+const MyQrCode = ({filteredVehicleInfo}) => {
   const [vehicleInfo, setVehicleInfo] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState(null);
@@ -20,16 +21,24 @@ const MyQrCode = () => {
   const [selectedFormat, setSelectedFormat] = useState(null); 
   const [showCreateModal, setShowCreateModal] = useState({ open: false, id: null });
   const [editModal, setEditModal] = useState({ open: false, id: null });
-
+  const componentRef = useRef();
 
   useEffect(() => {
-    fetchVehicleInfo();
+    // fetchVehicleInfo();
+    console.log(filteredVehicleInfo);
   }, []);
 
   useEffect(() => {
     console.log(vehicleInfo);
   }, [vehicleInfo]);
 
+  const handleCheckboxChange = (event, qrCodeId) => {
+    if (event.target.checked) {
+      localStorage.setItem('qrcodeId', qrCodeId)
+      console.log("Checkbox checked for QR code with ID:", qrCodeId);
+    }
+  };
+  
   const fetchVehicleInfo = () => {
     const token = JSON.parse(localStorage.getItem('user')).token;
     
@@ -70,6 +79,7 @@ const MyQrCode = () => {
     }
   };
 
+ 
 
   const downloadInFormat = (qrCodeId, format) => {
     if (!deleting) {
@@ -192,42 +202,18 @@ const MyQrCode = () => {
       console.error('Error updating QR Name:', error);
     });
   };
-  const handleSort = (criterion) => {
-    let sortedInfo = [...vehicleInfo];
-    switch (criterion) {
-      case "dateCreated":
-        sortedInfo.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        break;
-      case "dateModified":
-        sortedInfo.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-        break;
-      case "dealerName":
-        sortedInfo.sort((a, b) => a.vehicle?.DealerName.localeCompare(b.vehicle?.DealerName));
-        break;
-      default:
-        break;
-    }
-    setVehicleInfo(sortedInfo);
-    setSortBy(criterion);
-  };
-
-  const handleSortByDateCreated = () => {
-    handleSort('dateCreated');
-  };
-
-  const handleSortByDateModified = () => {
-    handleSort('dateModified');
-  };
-
-  const handleSortByDealerName = () => {
-    handleSort('dealerName');
-  };
 
   // Filtered vehicle information based on search query
-  const filteredVehicleInfo = vehicleInfo.filter((item) =>
-    item.vehicle?.vehicleName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredVehicleInfo = vehicleInfo.filter((item) =>
+  //   item.vehicle?.vehicleName.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
+  const printQRCode = () => {
+    if (selectedItemId) {
+      window.print();
+    }
+  };
 
+  
   return (
     <section className="qr-border qr-rounded p-4 overflow-y-scroll">
      <div className=" w-fit flex items-center">
@@ -238,12 +224,7 @@ const MyQrCode = () => {
         onChange={handleSearchQueryChange}
         className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-64"
       />
-    <div className="flex justify-end text-xs items-center ">
-      <p className="text-blue-900 mx-2">Sort by: </p>
-    <button onClick={handleSortByDateCreated} className="mr-2"> Date Created</button>
-        <button onClick={handleSortByDateModified} className="mr-2"> Date Modified</button>
-        <button onClick={handleSortByDealerName}> Dealer Name</button>
-    </div>
+
     </div>
       <div className="flex flex-col gap-4">
         {filteredVehicleInfo.map((item, index) => (
@@ -261,9 +242,13 @@ const MyQrCode = () => {
                 <button onClick={() => downloadQRCode(item._id)}>
                   <MdDownload />
                 </button>
-                <button onClick={() => printQRCode(item._id)}>
+                {/* <button onClick={() => printQRCode(item._id)}>
                   <MdPrint />
-                </button>
+                </button> */}
+                 <ReactToPrint
+        trigger={() => <button onClick={printQRCode}><MdPrint /></button>}
+        content={() => componentRef.current}
+      />
                 <HiOutlinePencil
                   onClick={() => handleEditButtonClick(item._id)} 
                   color="#a480ae"
@@ -278,7 +263,7 @@ const MyQrCode = () => {
                 </button>
               </div>
               
-              <div className="" id={`qr-code-${item._id}`}>
+              <div className="" id={`qr-code-${item._id}`} ref={componentRef}>
   <div className="flex gap-8 justify-center w-full flex-row-reverse mr-auto items-center shadow-md p-10 bg-white rounded-md">
     <div className="flex flex-row-reverse items-center gap-4 relative font-bold bg-red-600 ml-auto z-50">
       {item?.qrCodeImage && (
@@ -296,7 +281,7 @@ const MyQrCode = () => {
     </div>
     <div className="text-center font-bold ml-auto">
       <p>Sale Price: ${item.vehicle?.vehiclePrice}</p>
-      <p>Doc Fee: {item.vehicle?.docFee}</p>
+      <p>Doc Fee: ${item.vehicle?.docFee}</p>
       <p>{item.vehicle?.vehicleName}</p>
       {item.vehicle.DealerName && (
         <p>Dealer's Name: {item.vehicle?.DealerName}</p>

@@ -15,25 +15,45 @@ const QRCodePage = () => {
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [folders, setFolders] = useState([]);
   const [qrCodeId, setQrCodeId] = useState(null);
-  const [dropDown, setDropDown] = useState(true)
+  const [filterBy, setFilterBy] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dropDown, setDropDown] = useState(false)
+  const [vehicleInfo, setVehicleInfo] = useState([]);
+  const [sortBy, setSortBy] = useState(null);
 
   useEffect(() => {
     fetchFolders();
+    fetchVehicleInfo()
+
   }, []);
 
 
   const fetchVehicleInfo = () => {
-    // Fetch vehicle information from API
-    axios.get('https://server-master-ullz.onrender.com/vehicle')
-      .then(response => {
-        // Set vehicle information in state
-        setVehicleInfo(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching vehicle information:', error);
-      });
-  };
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
 
+    const queryParams = {
+      sortBy: sortBy,
+      filterBy: filterBy,
+    };
+
+    axios.get('https://server-master-ullz.onrender.com/vehicle', {
+      headers: headers,
+      params: queryParams
+    })
+    .then(response => {
+      const sortedVehicleInfo = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setVehicleInfo(sortedVehicleInfo);
+      console.log(sortedVehicleInfo);
+    })
+    .catch(error => {
+      console.error('Error fetching vehicle information:', error);
+    });
+  };
 
   const fetchFolders = async () => {
     try {
@@ -52,6 +72,46 @@ const QRCodePage = () => {
       toast.error('Failed to fetch folder data');
     }
   };
+
+  const handleSort = (criterion) => {
+    let sortedInfo = [...vehicleInfo];
+    switch (criterion) {
+      case "dateCreated":
+        sortedInfo.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      case "dateModified":
+        sortedInfo.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        break;
+      case "dealerName":
+        sortedInfo.sort((a, b) => a.vehicle?.DealerName.localeCompare(b.vehicle?.DealerName));
+        break;
+      default:
+        break;
+    }
+    setVehicleInfo(sortedInfo);
+    setSortBy(criterion);
+  };
+
+  const handleSortByDateCreated = () => {
+    handleSort('dateCreated');
+    setDropDown(!dropDown)
+  };
+
+  const handleSortByDateModified = () => {
+    handleSort('dateModified');
+    setDropDown(!dropDown)
+
+  };
+
+  const handleSortByDealerName = () => {
+    handleSort('dealerName');
+    setDropDown(!dropDown)
+
+  };
+  const filteredVehicleInfo = vehicleInfo.filter((item) =>
+    item.vehicle?.vehicleName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
 
   const handleFolderIconClick = () => {
     fetchFolders();
@@ -105,9 +165,9 @@ const QRCodePage = () => {
  />
                  {dropDown &&
                   <div className={dropDown ?'absolute top-6 bg-white border border-gray-600 w-36 text-black transition-all ease-in-out duration-300 p-1': 'transition-all ease-in-out duration-300'}>
-                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" >sort by Dealer Name</p>
-                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500">sort by Date Created</p>
-                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500">sort by Date Modified</p>
+                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" onClick={() => handleSortByDealerName()}>sort by Dealer Name</p>
+                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" onClick={handleSortByDateCreated}>sort by Date Created</p>
+                    <p className="text-xs cursor-pointer hover:text-blue-600 text-gray-500" onClick={handleSortByDateModified}>sort by Date Modified</p>
                   </div> 
                   }
               </div>
@@ -116,11 +176,12 @@ const QRCodePage = () => {
           </div>
           
           <MyQrCode onSelect={handleQrCodeSelection}  qrCodeId={qrCodeId} 
+          filteredVehicleInfo={filteredVehicleInfo}
           />
         </div>
       </div>
 
-      {showCreateModal && <Modal endpoint="generate" axiosPost={axios.post} title='Upload Vehicle information' onClose={() => setShowCreateModal(false)} />}
+      {showCreateModal && <Modal endpoint="vehicle/generate" axiosPost={axios.post} title='Upload Vehicle information' onClose={() => setShowCreateModal(false)} />}
       {showFolderModal && <FolderModal1 onClose={() => setShowFolderModal(false)} />}
       <ToastContainer />
     </div>
