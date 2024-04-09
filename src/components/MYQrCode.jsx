@@ -8,11 +8,7 @@ import domToImage from 'dom-to-image-more';
 import { HiOutlinePencil } from "react-icons/hi";
 import html2canvas from "html2canvas";
 
-const MyQrCode = ({
-  onSelect,
-  onSort,
-  onFilter
-}) => {
+const MyQrCode = () => {
   const [vehicleInfo, setVehicleInfo] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState(null);
@@ -137,6 +133,11 @@ const MyQrCode = ({
     setQrName(event.target.value);
   };
 
+  const handleEditQr = (id) => {
+    console.log("Edit QR clicked with id:", id);
+    setShowCreateModal({ open: true, id: id });
+  };
+  
   // Function to handle deleting a QR code item
   const deleteItem = (itemId) => {
     const token = JSON.parse(localStorage.getItem('user')).token;
@@ -167,6 +168,9 @@ const MyQrCode = ({
   const handleEditButtonClick = (itemId) => {
     setSelectedItemId(itemId);
     setEditModal({open:true, id:itemId});
+  }
+  const handleClose = () => {
+    setEditModal({open:false, id:null})
   }
   const handleEditQrName = () => {
     const token = JSON.parse(localStorage.getItem('user')).token;
@@ -350,7 +354,11 @@ const MyQrCode = ({
             placeholder="Enter new QR Name"
             className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
           />
+          <div className="flex justify-between">
+
           <button onClick={handleEditQrName} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Update QR Name</button>
+          <button onClick={() => handleClose()} className="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-600">Close</button>
+          </div>
         </div>
       </div>
       

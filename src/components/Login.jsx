@@ -39,7 +39,7 @@ const Login = () => {
           toast.success('Login Successful')
           
           history('/dash/qrcodes'); 
-        }, 1500);
+        }, 200);
       }
     } catch (error) {
       console.error('Login error:', error);
