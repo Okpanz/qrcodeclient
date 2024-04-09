@@ -20,6 +20,7 @@ const QRCodePage = () => {
   const [dropDown, setDropDown] = useState(false)
   const [vehicleInfo, setVehicleInfo] = useState([]);
   const [sortBy, setSortBy] = useState(null);
+  const [searchedVehicleInfo, setSearchedVehicleInfo] = useState([])
   const [activeSort, setActiveSort] = useState(null);
   useEffect(() => {
     fetchFolders();
@@ -53,6 +54,24 @@ const QRCodePage = () => {
     .catch(error => {
       console.error('Error fetching vehicle information:', error);
     });
+  };
+  useEffect(() => {
+    // Fetch vehicle info or update filtered data when searchQuery changes
+    if (searchQuery.trim() === "") {
+      // If search query is empty, set filtered data to original data
+      setSearchedVehicleInfo(vehicleInfo);
+    } else {
+      // If search query is not empty, filter data based on search query
+      const filteredData = vehicleInfo.filter(item =>
+        item.vehicle?.vehicleName.toLowerCase().includes(searchQuery.trim().toLowerCase())
+      );
+      setSearchedVehicleInfo(filteredData);
+    }
+  }, [searchQuery, vehicleInfo]);
+
+  // Function to handle changing the search query
+  const handleSearchQueryChange = (event) => {
+    setSearchQuery(event.target.value);
   };
 
   const fetchFolders = async () => {
@@ -178,6 +197,7 @@ const QRCodePage = () => {
           
           <MyQrCode onSelect={handleQrCodeSelection}  qrCodeId={qrCodeId} 
           filteredVehicleInfo={filteredVehicleInfo}
+          handleSearchQueryChange={handleSearchQueryChange}
           />
         </div>
       </div>

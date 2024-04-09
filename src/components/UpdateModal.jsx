@@ -21,18 +21,34 @@ function UpdateModal({ axiosPost, endpoint, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await axiosPost(`https://server-master-ullz.onrender.com/${endpoint}`, formData);
-      setLoading(false)
-      toast.success('Updated Successfully')
+      const updatedFormData = {};
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== '') {
+          updatedFormData[key] = formData[key];
+        }
+      });
+  
+      // Check if there are any fields to update
+      if (Object.keys(updatedFormData).length === 0) {
+        toast.warning('No fields to update');
+        return;
+      }
+  
+      const response = await axiosPost(`https://server-master-ullz.onrender.com/${endpoint}`, updatedFormData);
+      setLoading(false);
+      toast.success('Updated Successfully');
+      window.location.reload()
       onClose(); 
+      
     } catch (error) {
-        setLoading(false)
-        toast.error('Error while updating')
+      setLoading(false);
+      toast.error('Error while updating');
       console.error('Error updating QR Code:', error);
     }
   };
+  
 
   return (
     <div className="fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
