@@ -248,7 +248,7 @@ const Folder = () => {
 
       {showModal && selectedFolder && (
   <div className='fixed inset-0 flex flex-row md:flex-col items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
-    <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
+    <div className='bg-white p-8 h-[60vh] md:w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
       <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
       <div className="grid grid-cols-1 gap-4">
         {loading && <div className='text-black'>
@@ -301,7 +301,7 @@ const Folder = () => {
 
       {showEditModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-scroll'>
-          <div className='bg-white p-8 h-[60vh] w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
+          <div className='bg-white p-8 h-[60vh] md:w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
             <h2 className='font-bold text-lg mb-4'>Edit Folder: {selectedFolder}</h2>
             <input
               type='text'

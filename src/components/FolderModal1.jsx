@@ -59,7 +59,7 @@ const FolderModal1 = ({ action, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-8 rounded-md shadow-lg w-[50vw] transition-opacity duration-300">
+      <div className="bg-white p-8 rounded-md w-full shadow-lg md:w-[50vw] transition-opacity duration-300">
         <h2 className="font-bold text-lg mb-4">Folders</h2>
         <ul>
           {folders.map(folder => (
