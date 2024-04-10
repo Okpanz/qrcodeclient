@@ -98,7 +98,7 @@ const Sidebar = () => {
               </button>
               <button
                 onClick={handleLogout}
-                className="pl-2 text pt-3 md:hidden flex items-center justify-center text-red-600 w-full cursor-pointer transition-all ease-in-out duration-100 font-bold"
+                className={`${toggle && 'hidden'} pl-2 text pt-3 md:hidden flex items-center justify-center text-red-600 w-full cursor-pointer transition-all ease-in-out duration-100 font-bold`}
               >
                 <MdLogout className="mr-2" />
               </button>
