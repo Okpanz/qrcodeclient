@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
-import { MdDelete, MdDownload, MdOutlineQrCodeScanner, MdSearch, MdPrint } from "react-icons/md";
+import { MdDelete, MdDownload, MdOutlineQrCodeScanner, MdSearch, MdPrint, MdMenu } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Modal from "./Modal";
 import DownloadFormatModal from "./DownloadFormatModal";
@@ -24,7 +24,10 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   const [showCreateModal, setShowCreateModal] = useState({ open: false, id: null });
   const [editModal, setEditModal] = useState({ open: false, id: null });
   const [searchedVehicleInfo, setSearchedVehicleInfo] = useState([]);
+  const [qrToggle, setQrToggle] = useState(false)
   const componentRef = useRef();
+
+
 
   useEffect(() => {
     console.log(filteredVehicleInfo);
@@ -215,8 +218,10 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
     const formattedNumber = number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     return formattedNumber;
   }
-  
 
+  const handleQrToggle = (id) => {
+    setQrToggle(!qrToggle)
+  }
  
   return (
     <section className="qr-border qr-rounded p-4 overflow-y-scroll">
@@ -226,7 +231,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
         placeholder="Search by Vehicle Name..."
         // value={searchQuery}
         onChange={handleSearchQueryChange}
-        className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-64"
+        className="border border-gray-300 rounded-md px-3 py-2 mb-4  md:w-64 w-[11rem] md:placeholder:text-md placeholder:text-xs"
       />
 
     </div>
@@ -234,7 +239,44 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
         {filteredVehicleInfo.map((item, index) => (
           <div key={index} className="qr-card-container">
             <div className="flex flex-col gap-2 p-5">
-              <div className="flex items-center gap-2">
+              <div className="hover:text-blue-900 cursor-pointer md:hidden" onClick={handleQrToggle}><MdMenu /> </div>
+              <div className={qrToggle ?` md:hidden lex flex-row items-center gap-2 `: 'hidden'}>
+                <input 
+                  type="checkbox" 
+                  onChange={(event) => handleCheckboxChange(event, item._id)}
+                />
+                <label>{item?.qrName} </label>
+                <div className="flex flex-row">
+
+                <button onClick={() => handleDeleteButtonClick(item._id)}> 
+                  <MdDelete />
+                </button>
+                <button onClick={() => downloadQRCode(item._id)}>
+                  <MdDownload />
+                </button>
+                {/* <button onClick={() => printQRCode(item._id)}>
+                  <MdPrint />
+                </button> */}
+                 <ReactToPrint
+        trigger={() => <button onClick={printQRCode}><MdPrint /></button>}
+        content={() => componentRef.current}
+        />
+                <HiOutlinePencil
+                  onClick={() => handleEditButtonClick(item._id)} 
+                  color="#a480ae"
+                  size={20}
+                  className="cursor-pointer hover:scale-1"
+                  />
+                  </div>
+                <Link to={`/dash/stats/${item._id}`} className="text-blue-500">
+                  View Stats
+                </Link>
+                <button className="flex items-center text-blue-500" onClick={() => handleEditQr(item._id)}>
+                  <MdOutlineQrCodeScanner /><span className="text-xs">edit qr</span>
+                </button>
+              </div>
+              {/* Large screen */}
+              <div className={` hidden md:flex items-center gap-2 `}>
                 <input 
                   type="checkbox" 
                   onChange={(event) => handleCheckboxChange(event, item._id)}
@@ -268,8 +310,8 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
               </div>
               
               <div className="" id={`qr-code-${item._id}`} ref={componentRef}>
-  <div className="flex gap-8 justify-center w-full flex-row-reverse mr-auto items-center shadow-md p-10 bg-white rounded-md">
-    <div className="flex flex-row-reverse items-center gap-4 relative font-bold bg-red-600 ml-auto z-50">
+  <div className="flex gap-8 flex-col justify-center w-full md:flex-row-reverse mr-auto items-center shadow-md p-10 bg-white rounded-md">
+    <div className="flex flex-row-reverse items-center gap-4 relative font-bold  ml-auto z-50">
       {item?.qrCodeImage && (
         <img src={item.qrCodeImage} alt="QR Code" width={120} />
       )}
@@ -283,7 +325,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
         SHARE ME
       </div>
     </div>
-    <div className="text-center font-bold ml-auto">
+    <div className="md:text-center whitespace-nowrap font-bold md:text-md text-xs  ml-auto sm:my-2">
     {!isNaN(parseInt(item.vehicle?.vehiclePrice)) && (
   <p>Sale Price: {renderCurrency(parseInt(item.vehicle?.vehiclePrice))}</p>
 )}
@@ -309,11 +351,11 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
           Vehicle URL 
         </a>
       )}
-      <div className="flex mt-10">
-        <p className="font-normal relative left-20 -bottom-8">
+      <div className="md:flex mt-10">
+        <p className="font-normal md:relative md:text-md  text-xs left-20 -bottom-8">
           Stock #: {item.vehicle?.stockNo}.
         </p>
-        <p className="font-normal relative -bottom-8 left-44">
+        <p className="font-normal md:relative -bottom-8 left-44">
           VIN: {item.vehicle?.VIN}.
         </p>
       </div>
@@ -327,7 +369,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
       </div>
       {showCreateModal.open && (
   <UpdateModal
-    onClose={() => setShowCreateModal(false)}
+    onClose={() => setShowCreateModal({open:false, id:null})}
     endpoint={`vehicle/${showCreateModal.id}`}
     axiosPost={axios.patch}
   />

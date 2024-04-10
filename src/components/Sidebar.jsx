@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import QRLogo from "../assets/QRSS with name svg white.svg";
 import { RiQrCodeLine } from "react-icons/ri";
@@ -8,32 +8,10 @@ import { useDispatch } from "react-redux";
 import { logout } from "./../redux/authSlice";
 import { MdLogout } from "react-icons/md";
 import { BsQrCodeScan } from "react-icons/bs";
- 
+
 const Sidebar = () => {
   const dispatch = useDispatch(); // Get the dispatch function
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [widthChange, setWidthChange] = useState(false);
-
-  useEffect(() => {
-    function handleResize() {
-      const curWindowWidth = window.innerWidth;
-      if (curWindowWidth > 639) {
-        setWidthChange(true);
-      } else {
-        setWidthChange(false);
-      }
-    }
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
+  const [toggle, setToggle] = useState(false); // Set the toggle state
   const { pathname } = useLocation();
   const sidebarItems = [
     { text: "Create QR", link: "/dash/createQR" },
@@ -43,33 +21,30 @@ const Sidebar = () => {
     // { text: "Scan QR Code", link: "/scan" },
   ];
 
-  const sidebarIcons = (key) => {
-    return [
-      <BsQrCodeScan key={key} />,
-      <RiQrCodeLine key={key} />,
-      <CiFolderOn key={key} />,
-      <IoIosStats key={key} />,
-    ][key];
-  };
+  const sidebarIcons = [
+    <BsQrCodeScan />,
+    <RiQrCodeLine />,
+    <CiFolderOn />,
+    <IoIosStats />,
+  ];
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const handleToggle = () => {
+    setToggle((prevToggle) => !prevToggle);
   };
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = '/';
-    
+    window.location.href = "/";
   };
 
   return (
     <div
-      className={`flex flex-col md:w-64 w-14 bg-white h-screen text-gray-500 fixed `}
+      className={`flex flex-col ${ toggle ? "w-[50vw]" : "md:w-[20vw] w-[10vw]"} bg-white h-screen text-gray-500 fixed transition-all ease-in-out`}
     >
       <div className="lg:hidden">
         <button
-          onClick={toggleSidebar}
           className="px-4 py-2 text-blue-700 focus:outline-none"
+          onClick={handleToggle}
         >
           <svg
             className="h-6 w-6"
@@ -86,12 +61,8 @@ const Sidebar = () => {
           </svg>
         </button>
       </div>
-      <div
-        // className={`lg:flex lg:flex-col lg:justify-between lg:w-64 lg:h-screen lg:bg-white lg:text-gray-500 ${isSidebarOpen ? "block" : "hidden"}`}
-        className={`lg:flex lg:flex-col lg:justify-between lg:w-64 lg:h-screen lg:bg-white lg:text-gray-500 ${isSidebarOpen ? "block" : "hidden"}`}
-
-      >
-        <div className="flex items-center justify-center h-20 bg-white sm:hidden">
+      <div className="lg:flex lg:flex-col lg:justify-between">
+        <div className={`${toggle}flex items-center justify-center h-20 bg-white`}>
           <img src={QRLogo} alt="" />
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -107,22 +78,29 @@ const Sidebar = () => {
                       : ""
                   }`}
                 >
-                  {!widthChange && sidebarIcons(index)}
-                  {widthChange && (
-                    <div className={"flex gap-2 sm:hidden items-center"}>
-                      <span>{item.text}</span>
-                      <span>{sidebarIcons(index)}</span>
-                    </div>
-                  )}
+                  <div className="flex gap-2 items-center">
+                    <span className={toggle ? "lg:inline" : "hidden lg:inline"}>
+                      {item.text}
+                    </span>
+                    {sidebarIcons[index]}
+                  </div>
                 </NavLink>
               </li>
             ))}
             <li>
               <button
                 onClick={handleLogout}
-                className="p-4 flex items-center justify-center  text-red-600   w-full cursor-pointer transition-all ease-in-out duration-100 font-bold"
+                className={`p-4 ${
+                  toggle ? "flex" : "hidden md:flex"
+                } items-center justify-center text-red-600 w-full cursor-pointer transition-all ease-in-out duration-100 font-bold`}
               >
-                <MdLogout /> Logout
+                <MdLogout className="mr-2" /> Logout
+              </button>
+              <button
+                onClick={handleLogout}
+                className="pl-2 text pt-3 md:hidden flex items-center justify-center text-red-600 w-full cursor-pointer transition-all ease-in-out duration-100 font-bold"
+              >
+                <MdLogout className="mr-2" />
               </button>
             </li>
           </ul>

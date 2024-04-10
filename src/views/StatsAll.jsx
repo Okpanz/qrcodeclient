@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import ConvertTime from "../components/ConvertTime";
 
 export default function StatsAll() {
   const [statsData, setStatsData] = useState([]);
@@ -44,7 +45,7 @@ export default function StatsAll() {
   };
 
   return (
-    <div className="container p-10 overflow-y-scroll w-66">
+    <div className="container md:p-10 overflow-y-scroll w-66">
       <div className="filter-buttons bg-black text-white">
         <button onClick={() => filterStatsByTime('24hours')}>Last 24 Hours</button>
         <button onClick={() => filterStatsByTime('')}>Show All</button>
@@ -82,7 +83,7 @@ export default function StatsAll() {
                 {stats.scanHistory.map((scan, index) => (
                   <tr key={index}>
                     <td>{scan.scanNumber}</td>
-                    <td>{scan.scanTime}</td>
+                    <td><ConvertTime timestamp={scan.scanTime} /></td>
                     <td>{scan.scannedByDevice}</td>
                   </tr>
                 ))}

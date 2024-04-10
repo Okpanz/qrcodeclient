@@ -57,27 +57,14 @@ function UpdateModal({ axiosPost, endpoint, onClose }) {
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div className="inline-block align-bottom bg-white rounded-lg w-[50%] text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="sm:flex sm:items-start">
+            <div className="sm: sm:items-center">
               <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                 Update QR Code
               </h3>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-2 gap-4">
-                    {/* <div className="col-span-2">
-                      <label htmlFor="qrCodeId" className="block text-sm font-medium text-left text-gray-700">
-                        QR Code ID:
-                      </label>
-                      <input
-                        type="text"
-                        placeholder='Qr'
-                        name="qrCodeId"
-                        id="qrCodeId"
-                        className="mt-1 p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        value={qrCodeId}
-                        onChange={(e) => setQRCodeId(e.target.value)}
-                      />
-                    </div> */}
+                  
                     <div className="col-span-2">
                       <label htmlFor="vehicleURL" className="block text-left text-sm font-medium text-gray-700">
                         Vehicle URL:
@@ -186,6 +173,7 @@ function UpdateModal({ axiosPost, endpoint, onClose }) {
                       {loading ? 'Updating' : 'Update QR Code'}
                     </button>
                     <button
+                    onClick={onClose}
                       type="close"
                       className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >

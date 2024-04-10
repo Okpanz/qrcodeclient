@@ -168,12 +168,15 @@ const QRCodePage = () => {
 
   return (
     <div className="h-screen bg-slate-300 w-screen flex flex-col gap-2 justify-center items-center">
-      <button onClick={() => setShowCreateModal(true)} className="absolute right-0 top-0 m-10 p-3 rounded-sm bg-blue-300 flex items-center gap-2 text-blue-800">
+      <button onClick={() => setShowCreateModal(true)} className="hidden absolute right-0 top-0 m-10 p-3 rounded-sm bg-blue-300 md:flex items-center gap-2 text-blue-800">
         Create QR Code <MdCreateNewFolder />
+      </button>
+      <button onClick={() => setShowCreateModal(true)} className="md:hidden absolute right-0 top-0 m-5 p-3 rounded-lg bg-blue-300 text-3xl items-center gap-2 text-blue-800">
+       <MdCreateNewFolder />
       </button>
 
       <div className="flex h-[90vh] w">
-        <div className="w-[60vw] bg-white rounded-sm border border-gray-300 p-10 flex flex-col gap-6 overflow-hidden">
+        <div className="md:w-[60vw] bg-white rounded-sm border border-gray-300 p-10 flex flex-col gap-6 overflow-hidden">
           <div className="flex  flex-row gap-8">
             <div className="px-5 py-4 gap-5 flex text-gray-400 items-center justify-between qr-border qr-rounded w-full">
               
