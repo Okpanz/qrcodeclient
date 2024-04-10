@@ -113,7 +113,7 @@ const CreateQRCode = () => {
 
   return (
     <>
-      <div className="bg-gray-300 p-8 rounded-md shadow-lg w-[50vw] ml-auto overflow-y-scroll transition-opacity duration-300">
+      <div className="bg-gray-300 p-8 rounded-md shadow-lg w-[70vw] md:w-[50vw] ml-auto overflow-y-scroll transition-opacity duration-300">
         <h2 className="font-bold text-lg mb-4">Create QR Code</h2>
         <form className="space-y-4">
           <div>
