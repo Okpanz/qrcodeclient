@@ -45,7 +45,7 @@ export default function StatsAll() {
   };
 
   return (
-    <div className="container md:p-10 overflow-y-scroll w-66">
+    <div className="container md:p-10 overflow-y-scroll w-66 mx-auto">
       <div className="filter-buttons bg-black text-white">
         <button onClick={() => filterStatsByTime('24hours')}>Last 24 Hours</button>
         <button onClick={() => filterStatsByTime('')}>Show All</button>
