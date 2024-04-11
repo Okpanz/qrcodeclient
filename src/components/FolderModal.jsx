@@ -31,6 +31,7 @@ const FolderModal = ({ title, onClose }) => {
       toast.success(response?.data?.message);
       console.log('Folder created successfully:', response.data);
       setLoading(false);
+      
       window.location.reload()
             })
       .catch(error => {

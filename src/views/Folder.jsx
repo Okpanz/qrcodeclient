@@ -68,8 +68,8 @@ const Folder = () => {
   
   const handleFolderClick = async (folderId, folderName) => {
     setSelectedFolder(folderId);
-    console.log(selectedFolder)
-    localStorage.setItem('selectedFolder', selectedFolder)
+    console.log(selectedFolder);
+    localStorage.setItem('selectedFolder', folderId); 
     setShowModal(true);
 
     try {
