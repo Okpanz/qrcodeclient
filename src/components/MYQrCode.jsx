@@ -25,6 +25,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   const [editModal, setEditModal] = useState({ open: false, id: null });
   const [searchedVehicleInfo, setSearchedVehicleInfo] = useState([]);
   const [qrToggle, setQrToggle] = useState(false)
+  const [loading, setLoading] =useState(false);
   const componentRef = useRef();
 
 
@@ -45,6 +46,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   };
   
   const fetchVehicleInfo = () => {
+    setLoading(true)
     const token = JSON.parse(localStorage.getItem('user')).token;
     
     const headers = {
@@ -65,9 +67,11 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
     .then(response => {
       const sortedVehicleInfo = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setVehicleInfo(sortedVehicleInfo);
+      setLoading(false)
     })
     .catch(error => {
       console.error('Error fetching vehicle information:', error);
+      setLoading(false)
     });
   };
 
@@ -152,7 +156,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   // Function to handle deleting a QR code item
   const deleteItem = (itemId) => {
     const token = JSON.parse(localStorage.getItem('user')).token;
-    
+    setLoading(true)
     const headers = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -167,9 +171,11 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
       console.log('Item deleted successfully:', response.data);
       setSelectedItemId(null);
       setDeleting(false); 
+      setLoading(false)
     })
     .catch(error => {
       toast.error('Error Deleting files')
+      setLoading(false)
       console.error('Error deleting item:', error);
     });
   };
@@ -187,7 +193,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   }
   const handleEditQrName = () => {
     const token = JSON.parse(localStorage.getItem('user')).token;
-    
+    setLoading(true)
     const headers = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -200,9 +206,11 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
       console.log('QR Name updated successfully:', response.data);
       setEditModal({ open: false, id: null });
       fetchVehicleInfo();
+      setLoading(false)
       window.location.reload()
     })
     .catch(error => {
+      setLoading(false)
       console.error('Error updating QR Name:', error);
     });
   };
@@ -222,6 +230,7 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   const handleQrToggle = (id) => {
     setQrToggle(!qrToggle)
   }
+  
  
   return (
     <section className="qr-border qr-rounded p-4 overflow-y-scroll">
@@ -308,10 +317,14 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
                   <MdOutlineQrCodeScanner /><span className="text-xs">edit qr</span>
                 </button>
               </div>
-              
+              {loading&& 
+  <div>
+      <GridLoader color='blue' />
+
+  </div>}
               <div className="" id={`qr-code-${item._id}`} ref={componentRef}>
   <div className="flex gap-8 flex-col justify-center w-full md:flex-row-reverse mr-auto items-center shadow-md p-10 bg-white rounded-md">
-    <div className="flex flex-row-reverse items-center gap-4 relative font-bold  ml-auto z-50">
+    <div className="flex flex-row-reverse items-center gap-4 relative font-bold  ml-auto z-20">
       {item?.qrCodeImage && (
         <img src={item.qrCodeImage} alt="QR Code" width={120} />
       )}

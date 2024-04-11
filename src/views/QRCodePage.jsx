@@ -187,7 +187,7 @@ const QRCodePage = () => {
               <MdFilterAlt onClick={() => handleToggle()} className={dropDown ? 'text-blue-700 hover:text-black cursor-pointer transition-all ease-in-out duration-200 ' : 'transition-all ease-in-out duration-300 cursor-pointer'}
  />
                  {dropDown &&
-                  <div className={dropDown ?'absolute top-6 bg-white border border-gray-600 w-36 text-black transition-all ease-in-out duration-300 p-1': 'transition-all ease-in-out duration-300'}>
+                  <div className={dropDown ?'absolute z-30 top-6 bg-white border border-gray-600 w-36 text-black transition-all ease-in-out duration-300 p-1': 'transition-all ease-in-out duration-300 '}>
                    <p className={`text-xs cursor-pointer ${activeSort === 'dealerName' ? 'font-bold' : ''}`} onClick={() => handleSortByDealerName()}>sort by Dealer Name</p>
                     <p className={`text-xs cursor-pointer ${activeSort === 'dateCreated' ? 'font-bold' : ''}`} onClick={handleSortByDateCreated}>sort by Date Created</p>
                     <p className={`text-xs cursor-pointer ${activeSort === 'dateModified' ? 'font-bold' : ''}`} onClick={handleSortByDateModified}>sort by Date Modified</p>

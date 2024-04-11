@@ -37,7 +37,7 @@ export default function Stats() {
             <tbody>
               <tr>
                 <td className="">VIN:</td>
-                <td>VIN{statsData.VIN}</td>
+                <td>{statsData.VIN}</td>
               </tr>
               <tr>
                 <td className="label">createdAt:</td>

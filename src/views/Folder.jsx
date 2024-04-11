@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import FolderModal from '../components/FolderModal';
 import { HiFolderRemove } from "react-icons/hi";
 import html2canvas from 'html2canvas';
+import { GridLoader } from 'react-spinners';
 
 const Folder = () => {
   const [folders, setFolders] = useState([]);
@@ -176,7 +177,11 @@ const Folder = () => {
   return (
     <div className='h-screen  bg-slate-300 flex w-screen  flex-col gap-2 justify-center items-center md:w-screen ' >
       <ToastContainer />
-      {loading && <div className="fixed top-0 left-0 right-0 bottom-0 w-[100%] text-white bg-black flex justify-center items-center opacity-50 z-50">Loading....</div>}
+      {loading && 
+      <div className="fixed top-0 left-0 right-0 bottom-0 w-[100%] text-white bg-slate-950 flex justify-center items-center opacity-50 z-50">
+      <GridLoader color='#fff' />
+      </div>
+      }
       <button
         onClick={handleCreateFolder}
         className='absolute right-0 top-0 m-10 p-3 rounded-sm bg-blue-300 md:flex hidden items-center gap-2 text-blue-800'
@@ -251,9 +256,10 @@ const Folder = () => {
     <div className='bg-white p-8 h-[60vh] md:w-[50%] overflow-y-scroll rounded-md shadow-lg transition-opacity duration-300'>
       <h2 className='font-bold text-lg mb-4'>QR Code for Folder: {folders.find(folder => folder._id === selectedFolder)?.name}</h2>
       <div className="grid grid-cols-1 gap-4">
-        {loading && <div className='text-black'>
+        {loading && <div className='text-black opacity-40 flex justify-center items-center w-full h-full'>
+      <GridLoader color='black' />
           
-          Loading
+         
           </div>}
         {qrCodeData && qrCodeData.map((qrData, index) => (
           <div key={index} className='border w-full border-gray-200 p-4 bg-slate-200 hover:bg-slate-300 cursor-pointer rounded-md flex md:flex-row flex-col justify-between'  id={`qr-code-${qrData._id}`}>
