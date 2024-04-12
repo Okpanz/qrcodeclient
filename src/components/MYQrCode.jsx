@@ -10,6 +10,7 @@ import html2canvas from "html2canvas";
 import ReactToPrint from "react-to-print";
 import UpdateModal from "./UpdateModal";
 import { toast } from "react-toastify";
+import { GridLoader } from "react-spinners";
 
 const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
   const [vehicleInfo, setVehicleInfo] = useState([]);
@@ -170,8 +171,9 @@ const MyQrCode = ({filteredVehicleInfo, handleSearchQueryChange}) => {
       toast.success('Deleted successfully')
       console.log('Item deleted successfully:', response.data);
       setSelectedItemId(null);
-      setDeleting(false); 
       setLoading(false)
+      setDeleting(false); 
+      fetchVehicleInfo()
     })
     .catch(error => {
       toast.error('Error Deleting files')
