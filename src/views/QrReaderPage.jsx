@@ -14,9 +14,11 @@ export default function QrReaderPage() {
   const [showQr, setShowQr] = useState(true);
   const [qrCodeId, setQrCodeId] = useState();
   const [vehicleName, setVehicleName] = useState();
+  const [deal, setDeal] = useState('');
+  const [name, setName] = useState('');
 
   function handleGetQr(data) {
-    const [vehicleURL, vehiclePrice, VIM, stockNo, qrCodeId] = parseQrResult(
+    const [vehicleURL, vehiclePrice, VIM, stockNo, qrCodeId , vehicleName, DealerName] = parseQrResult(
       JSON.parse(data)
     );
     setVehicleUrl(vehicleURL);
@@ -26,6 +28,8 @@ export default function QrReaderPage() {
     setShowQr(false);
     setQrCodeId(qrCodeId);
     setVehicleName(vehicleName);
+    setDeal(DealerName);
+    setName(vehicleName);
     console.log("from the handle get qr", JSON.parse(data));
 
     // Trigger GET request when scan is successful
@@ -83,7 +87,15 @@ export default function QrReaderPage() {
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">Stock NO</td>
-                      <td className="border px-4 py-2">{stockNo}</td>
+                      <td className="border px-4 py-2">{stockNo} </td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">Dealer's Name</td>
+                      <td className="border px-4 py-2">{deal}</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">Vehicle's Name</td>
+                      <td className="border px-4 py-2">{name}</td>
                     </tr>
                   </tbody>
                 </table>
