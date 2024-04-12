@@ -19,12 +19,7 @@ const AuthPage = () => {
           >
             Login
           </button>
-          <button
-            className={`px-4 py-2 rounded-md focus:outline-none ${activeTab === 'signup' ? 'bg-primary text-white' : 'text-gray-700'}`}
-            onClick={() => handleTabChange('signup')}
-          >
-            {/* Sign Up */}
-          </button>
+        
         </div>
         {activeTab === 'login' && <Login />}
         {/* {activeTab === 'signup' && <SignUp />} */}
